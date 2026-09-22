@@ -390,11 +390,11 @@ def main():
             )
 
         val = evaluate(
-                model,
-                val_encoded,
-                tokenizer,
-                device,
-            )
+            model,
+            val_encoded,
+            tokenizer,
+            device,
+        )
 
         print(
             f"Epoch {epoch + 1:02d}/{EPOCHS} | "
@@ -407,24 +407,24 @@ def main():
             bad = 0
 
             torch.save(
-                    {
-                        "model_state": model.state_dict(),
-                        "vocab_size": checkpoint["vocab_size"],
-                        "block_size": checkpoint["block_size"],
-                        "d_model": checkpoint["d_model"],
-                        "n_heads": checkpoint["n_heads"],
-                        "n_layers": checkpoint["n_layers"],
-                        "dropout": checkpoint.get("dropout", 0.1),
-                        "stage": "v7_sft",
-                        "best_val_loss": best,
-                        "instruction_examples": len(examples),
-                    },
-                    OUT_MODEL,
-                )
+                {
+                    "model_state": model.state_dict(),
+                    "vocab_size": checkpoint["vocab_size"],
+                    "block_size": checkpoint["block_size"],
+                    "d_model": checkpoint["d_model"],
+                    "n_heads": checkpoint["n_heads"],
+                    "n_layers": checkpoint["n_layers"],
+                    "dropout": checkpoint.get("dropout", 0.1),
+                    "stage": "v7_sft",
+                    "best_val_loss": best,
+                    "instruction_examples": len(examples),
+                },
+                OUT_MODEL,
+            )
 
-                tokenizer.save(
-                    OUT_TOKENIZER
-                )
+            tokenizer.save(
+                OUT_TOKENIZER
+            )
 
             print("  Saved best v7 SFT checkpoint.")
         else:
