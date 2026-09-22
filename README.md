@@ -8,48 +8,81 @@ Own AI is an original local-first AI project built from scratch with PyTorch.
 
 - Decoder-only Transformer language model
 - Own AI v4/v5/v6 experiments preserved
-- True response-only instruction SFT in v6
+- v7 scalable Transformer path
+- v8 larger Transformer path with RoPE, RMSNorm and SwiGLU
+- True response-only instruction fine-tuning
 - Local knowledge retrieval (RAG)
-- Persistent accounts and saved chats
+- Persistent local accounts and saved chats
 - Cross-chat memory recall
 - Exact local calculator/tool routing
-- Optional web search without an API key
+- Optional web search without an AI API key
 - File upload and local document indexing
-- PDF and DOCX text extraction
-- Optional local image understanding with BLIP
+- PDF and DOCX extraction
+- Optional local image understanding
 - Browser voice input and speech output
 - Responsive desktop/mobile web UI
 - PWA install support
 - Localhost-only server by default
+- Google Drive dataset-lake helper with SHA-256 manifests
 
-### v7 model path
+## v8 brain upgrade
 
-The repository also contains a larger scalable Transformer:
+The main development direction is now v8.
 
-- 512-token context
+Default model profile:
+
+- 4096-token vocabulary
+- 1024-token context
 - 384-dimensional embeddings
 - 8 attention heads
-- 12 Transformer layers
+- 16 Transformer layers
+- RoPE positional encoding
 - RMSNorm
-- SwiGLU feed-forward blocks
-- approximately 20M parameters
-- Unicode-aware ranked BPE tokenizer
-- mixed-precision training support
+- SwiGLU
+- weight tying
+- gradient-checkpointing support
+- roughly 30M-class parameter scale
 
-The v7 model is a separate architecture and therefore requires v7 pretraining before v7 SFT.
+The v8 tokenizer is a hybrid word/Unicode tokenizer. Frequent complete pieces can become tokens while Unicode characters from the training corpus are explicitly preserved for fallback.
 
-## Run the current Own AI app
+The v8 dataset builder creates a balanced supervised dataset across:
+
+- general explanations
+- coding
+- Sinhala
+- math
+- tool usage
+- conversation behavior
+- legacy instruction examples
+
+It also builds a clean pretraining corpus from local data.
+
+## Run the app
 
 Update the local copy:
 
-    cd /d "D:Own AI"
+    cd /d "D:\Own AI"
     git pull origin main
 
-Install optional document/vision dependencies:
+Install v8 dependencies:
 
-    install_v7.bat
+    install_v8.bat
 
-Start the local web app:
+Run the 25-step smoke test first:
+
+    train_v8_smoke.bat
+
+Build and train the full v8 pipeline:
+
+    train_v8.bat
+
+Or run the phases separately:
+
+    python data\build_v8_dataset.py
+    python training\train_v8.py
+    python training\train_sft_v8.py
+
+After v8 SFT finishes, start the app:
 
     start_own_ai.bat
 
@@ -57,56 +90,45 @@ Open:
 
     http://127.0.0.1:8000
 
-Create a local account, then use the workspace.
+Run the local benchmark:
 
-## Build a larger v7 model
+    python tools\benchmark_v8.py
 
-Generate thousands of structured instruction examples:
+## Data lake / 4.5 TB cloud storage
 
-    .venv\Scripts\activate
-    python data\build_instruction_dataset_v7.py
+Do not download 4.5 TB to the laptop.
 
-Build a cleaned training corpus:
+Use the cloud space as a dataset lake and keep only the active shard(s) in the local cache. Organize cloud data into owned, open-license, code, education, Sinhala, documents, conversations, images, and other clearly labeled collections.
 
-    python data\build_corpus_v7.py
+Local manifest:
 
-Pretrain the larger Transformer:
+    python cloud\google_drive_sync.py manifest data
 
-    python training\train_v7.py
+Upload a dataset folder to Google Drive:
 
-Then instruction-tune it:
+    set GOOGLE_DRIVE_PARENT_ID=YOUR_FOLDER_ID
+    python cloud\google_drive_sync.py upload "D:\Own AI\data\to_upload"
 
-    python training\train_sft_v7.py
+Read:
 
-Convenience launchers are also provided:
+    cloud\DATA_LAKE.md
 
-    train_v7.bat
-    train_sft_v7.bat
+Keep license/attribution information with every external dataset. Never put credentials, OAuth tokens, API keys, or private secrets into the training corpus.
 
-The v7 training scripts accept environment variables for model size, context, batch size, gradient accumulation, learning rate and training length.
+## No public AI API
 
-## Data and knowledge
+The core assistant runs the language model locally. The local web UI talks to the local Python server over localhost.
 
-Put durable local knowledge into:
-
-    data\knowledge\
-
-User-uploaded documents are stored under:
-
-    data\uploads\<username>\
-
-The RAG system indexes raw knowledge and uploaded text, not generated training wrappers or backup datasets.
-
-## No public API
-
-This project does not expose a public cloud API. The browser communicates with the local Python server over localhost because a browser needs a transport layer to talk to the local model.
+The optional web-search tool fetches public web results when explicitly requested; it is a tool, not an external AI-model API.
 
 ## Important limitations
 
-This is an original small AI project, not GPT, Gemini or Claude.
+Own AI is an original small-scale research project, not GPT, Gemini, Claude, or another frontier model.
 
-A larger dataset improves coverage only when the data is diverse and high quality. Millions of duplicated or templated examples are not equivalent to a high-quality training corpus.
+A huge storage quota does not automatically create a strong model. The useful path is:
 
-For frontier-level capability, much larger model capacity, much more training data, longer context, better evaluation, and substantial compute are required.
+high-quality data -> deduplication -> correct tokenizer -> pretraining -> instruction SFT -> evaluation -> retrieval/tools -> iteration.
 
-The project is designed to grow toward that direction without replacing the local-first architecture.
+Millions of duplicated or templated examples are not equivalent to a high-quality corpus, and frontier-level capabilities require vastly more compute, data, engineering, and evaluation.
+
+The project is designed to grow step by step while keeping the core architecture local-first.
