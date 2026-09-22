@@ -1,6 +1,7 @@
 from pathlib import Path
 import hashlib
 import json
+import os
 import random
 import re
 
@@ -552,7 +553,11 @@ def main():
                 + "\n"
             )
 
-    write_corpus(records)
+    if os.getenv(
+        "OWN_AI_V8_BUILD_LEGACY_CORPUS",
+        "0",
+    ).lower() in {"1", "true", "yes"}:
+        write_corpus(records)
 
     counts = {}
     groups = set()
