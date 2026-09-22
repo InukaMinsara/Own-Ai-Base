@@ -275,9 +275,13 @@ def main():
         weights_only=False,
     )
 
+    block_size = int(
+        checkpoint["block_size"]
+    )
+
     model = OwnAIv8(
         vocab_size=checkpoint["vocab_size"],
-        block_size=checkpoint["block_size"],
+        block_size=block_size,
         d_model=checkpoint["d_model"],
         n_heads=checkpoint["n_heads"],
         n_layers=checkpoint["n_layers"],
@@ -317,6 +321,10 @@ def main():
     print("Context:", BLOCK_SIZE)
     print("Batch:", BATCH_SIZE, "x", ACCUM)
     print("=" * 64)
+
+    # Match the context used by the pretrained checkpoint.
+    global BLOCK_SIZE
+    BLOCK_SIZE = block_size
 
     for epoch in range(EPOCHS):
         random.shuffle(train_rows)
