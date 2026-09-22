@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0d10">
+<link rel="manifest" href="/static/manifest.json">
+<title>Own AI</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<div id="loginScreen" class="screen">
+  <div class="auth-card">
+    <div class="logo">Own AI</div>
+    <div class="muted">Your local AI workspace</div>
+    <div class="tabs">
+      <button id="loginTab" class="tab active">Login</button>
+      <button id="registerTab" class="tab">Create account</button>
+    </div>
+    <input id="authUser" autocomplete="username" placeholder="Username">
+    <input id="authPass" type="password" autocomplete="current-password" placeholder="Password">
+    <button id="authButton" class="primary">Login</button>
+    <div id="authStatus" class="error"></div>
+    <div class="tiny">Accounts and saved chats stay on this computer.</div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-row">
+      <div>
+        <div class="logo">Own AI</div>
+        <div class="muted">local-first workspace</div>
+      </div>
+      <button id="closeSide" class="icon mobile-only">×</button>
+    </div>
+
+    <button id="newChat" class="primary full">＋ New chat</button>
+
+    <div class="side-actions">
+      <button id="modelInfo" class="ghost">Model</button>
+      <button id="logout" class="ghost">Logout</button>
+    </div>
+
+    <div class="section-title">Saved chats</div>
+    <div id="chatList" class="chat-list"></div>
+    <div class="sidebar-footer" id="userLabel"></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button id="openSide" class="icon mobile-only">☰</button>
+      <div>
+        <div class="title">Own AI</div>
+        <div id="status" class="muted">Ready</div>
+      </div>
+      <button id="installApp" class="ghost">Install</button>
+    </header>
+
+    <section id="messages" class="messages">
+      <div class="welcome">
+        <div class="welcome-title">Meet your Own AI</div>
+        <div class="muted">
+          Coding, math, knowledge, documents, web search and voice.
+        </div>
+
+        <div class="quick-grid">
+          <button data-quick="Explain machine learning simply.">Explain AI</button>
+          <button data-quick="Calculate 125 * 48">Solve math</button>
+          <button data-quick="Help me write a Python function.">Write Python</button>
+          <button data-quick="Search the web for the latest AI news">Search web</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="composer">
+      <div id="attachment" class="attachment hidden"></div>
+
+      <textarea
+        id="input"
+        rows="1"
+        placeholder="Message Own AI..."
+      ></textarea>
+
+      <div class="composer-row">
+        <div class="left-tools">
+          <label class="tool">
+            <input id="fileInput" type="file" hidden>
+            <span>＋ File</span>
+          </label>
+
+          <label class="tool">
+            <input id="imageInput" type="file" accept="image/*" hidden>
+            <span>＋ Image</span>
+          </label>
+
+          <button id="voiceIn" class="tool">🎙 Voice</button>
+          <button id="voiceOut" class="tool">🔊 Read</button>
+
+          <label class="tool toggle">
+            <input id="rag" type="checkbox" checked>
+            <span>Knowledge</span>
+          </label>
+
+          <button id="webMode" class="tool">Web</button>
+        </div>
+
+        <button id="send" class="send">Send</button>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="title">Model information</div>
+      <button id="closeModal" class="icon">×</button>
+    </div>
+    <pre id="modelInfoText"></pre>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+<script>
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("/static/sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
