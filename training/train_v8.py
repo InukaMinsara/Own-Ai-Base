@@ -32,7 +32,7 @@ USE_CHECKPOINTING = os.getenv(
     "1",
 ).lower() not in {"0", "false", "no"}
 SEED = 42
-EVAL_INTERVAL = 100
+EVAL_INTERVAL = int(os.getenv("OWN_AI_V8_EVAL_INTERVAL", "100"))
 
 
 def batch(data, batch_size, block_size):
