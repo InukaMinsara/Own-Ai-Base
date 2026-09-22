@@ -1,73 +1,112 @@
 # Own-Ai-Base
 
-A from-scratch small Transformer language model project built with PyTorch.
+Own AI is an original local-first AI project built from scratch with PyTorch.
 
-## Model
+## What it contains
 
-- Decoder-only causal Transformer
-- 8 layers
+### Current local assistant
+
+- Decoder-only Transformer language model
+- Own AI v4/v5/v6 experiments preserved
+- True response-only instruction SFT in v6
+- Local knowledge retrieval (RAG)
+- Persistent accounts and saved chats
+- Cross-chat memory recall
+- Exact local calculator/tool routing
+- Optional web search without an API key
+- File upload and local document indexing
+- PDF and DOCX text extraction
+- Optional local image understanding with BLIP
+- Browser voice input and speech output
+- Responsive desktop/mobile web UI
+- PWA install support
+- Localhost-only server by default
+
+### v7 model path
+
+The repository also contains a larger scalable Transformer:
+
+- 512-token context
+- 384-dimensional embeddings
 - 8 attention heads
-- 256-dimensional embeddings
-- 256-token context window
-- 512-token vocabulary
-- approximately 6.5M parameters
-- weight-tied language-model head
-- CUDA support through PyTorch
+- 12 Transformer layers
+- RMSNorm
+- SwiGLU feed-forward blocks
+- approximately 20M parameters
+- Unicode-aware ranked BPE tokenizer
+- mixed-precision training support
 
-## Own AI v6
+The v7 model is a separate architecture and therefore requires v7 pretraining before v7 SFT.
 
-v6 adds the pieces that make the model usable as a local assistant:
+## Run the current Own AI app
 
-1. Base language-model pretraining
-2. True instruction SFT with assistant-response-only loss masking
-3. Local retrieval over project data
-4. Conversation memory
-5. Browser chat interface
+Update the local copy:
 
-### Train v6
+    cd /d "D:Own AI"
+    git pull origin main
 
-From the project root:
+Install optional document/vision dependencies:
 
-    .venv\Scripts\activate
-    python data\build_instructions.py
-    python training\train_sft_v6.py
+    install_v7.bat
 
-The SFT stage starts from:
+Start the local web app:
 
-    checkpoints\own_ai_best.pt
+    start_own_ai.bat
 
-and creates:
-
-    checkpoints\own_ai_v6_sft_best.pt
-    checkpoints\tokenizer_v6.json
-
-The existing v5 experiment is intentionally preserved.
-
-### Run the browser chat
-
-    .venv\Scripts\activate
-    python chat\server.py
-
-Then open:
+Open:
 
     http://127.0.0.1:8000
 
-The server automatically uses the v6 SFT checkpoint when it exists. Otherwise it falls back to the base checkpoint.
+Create a local account, then use the workspace.
 
-## RAG and memory
+## Build a larger v7 model
 
-The model's learned knowledge comes from training data stored in its weights.
+Generate thousands of structured instruction examples:
 
-The RAG layer is separate. It searches local .txt and .md files under data at runtime and places relevant text into the prompt. Updating those files does not require retraining the model.
+    .venv\Scripts\activate
+    python data\build_instruction_dataset_v7.py
 
-Conversation memory is also runtime state. It keeps recent turns for the current server session.
+Build a cleaned training corpus:
 
-## Important limitation
+    python data\build_corpus_v7.py
 
-This is an original small model, not a copy of GPT, Gemini, or Claude. Its current 6.5M-parameter architecture and small instruction dataset are far below frontier-model scale.
+Pretrain the larger Transformer:
 
-The project is structured so the important parts can keep growing:
+    python training\train_v7.py
 
-data -> tokenizer -> pretraining -> instruction tuning -> retrieval -> memory -> interface
+Then instruction-tune it:
 
-For stronger quality, the next major upgrade is a much larger, clean, legally usable dataset plus a larger model architecture and longer context window.
+    python training\train_sft_v7.py
+
+Convenience launchers are also provided:
+
+    train_v7.bat
+    train_sft_v7.bat
+
+The v7 training scripts accept environment variables for model size, context, batch size, gradient accumulation, learning rate and training length.
+
+## Data and knowledge
+
+Put durable local knowledge into:
+
+    data\knowledge\
+
+User-uploaded documents are stored under:
+
+    data\uploads\<username>\
+
+The RAG system indexes raw knowledge and uploaded text, not generated training wrappers or backup datasets.
+
+## No public API
+
+This project does not expose a public cloud API. The browser communicates with the local Python server over localhost because a browser needs a transport layer to talk to the local model.
+
+## Important limitations
+
+This is an original small AI project, not GPT, Gemini or Claude.
+
+A larger dataset improves coverage only when the data is diverse and high quality. Millions of duplicated or templated examples are not equivalent to a high-quality training corpus.
+
+For frontier-level capability, much larger model capacity, much more training data, longer context, better evaluation, and substantial compute are required.
+
+The project is designed to grow toward that direction without replacing the local-first architecture.
