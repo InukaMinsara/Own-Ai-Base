@@ -167,6 +167,50 @@ class AppStore:
 
         return chat
 
+    def search_memory(self, username, query, top_k=5):
+        words = set(
+            query.lower().split()
+        )
+
+        if len(words) < 2:
+            return []
+
+        scored = []
+
+        for chat in self.data["chats"].values():
+            if chat["username"] != username:
+                continue
+
+            for message in chat["messages"]:
+                content = message["content"]
+                candidate = set(
+                    content.lower().split()
+                )
+
+                overlap = len(words & candidate)
+
+                if overlap:
+                    scored.append(
+                        (
+                            overlap,
+                            message["timestamp"],
+                            message,
+                        )
+                    )
+
+        scored.sort(
+            key=lambda item: (
+                item[0],
+                item[1],
+            ),
+            reverse=True,
+        )
+
+        return [
+            item[2]
+            for item in scored[:top_k]
+        ]
+
     def delete_chat(self, username, chat_id):
         chat = self.get_chat(username, chat_id)
         del self.data["chats"][chat_id]
