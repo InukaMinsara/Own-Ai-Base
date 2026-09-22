@@ -3,6 +3,14 @@ setlocal
 
 cd /d "%~dp0.."
 
+if not exist ".venv\Scripts\python.exe" (
+    echo [ERROR] .venv not found.
+    pause
+    exit /b 1
+)
+
+call ".venv\Scripts\activate.bat"
+
 echo ================================================
 echo OWN AI v8 - FULL LOCAL TRAINING PIPELINE
 echo ================================================
