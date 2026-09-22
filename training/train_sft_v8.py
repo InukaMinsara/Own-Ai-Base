@@ -15,8 +15,16 @@ from model.own_ai_v8 import OwnAIv8
 
 
 INSTRUCTION_FILE = ROOT / "data" / "processed" / "sft_v8.jsonl"
-BASE_MODEL = ROOT / "checkpoints" / "own_ai_v8_pretrain_best.pt"
-BASE_TOKENIZER = ROOT / "checkpoints" / "tokenizer_v8.json"
+PRETRAIN_CANDIDATES = [
+    (
+        ROOT / "checkpoints" / "own_ai_v8_streaming_best.pt",
+        ROOT / "checkpoints" / "tokenizer_v8_streaming.json",
+    ),
+    (
+        ROOT / "checkpoints" / "own_ai_v8_pretrain_best.pt",
+        ROOT / "checkpoints" / "tokenizer_v8.json",
+    ),
+]
 OUT_MODEL = ROOT / "checkpoints" / "own_ai_v8_sft_best.pt"
 OUT_TOKENIZER = ROOT / "checkpoints" / "tokenizer_v8_sft.json"
 
@@ -243,15 +251,24 @@ def main():
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(SEED)
 
-    for path in (
-        INSTRUCTION_FILE,
-        BASE_MODEL,
-        BASE_TOKENIZER,
-    ):
-        if not path.exists():
-            raise FileNotFoundError(
-                f"Missing: {path}"
-            )
+    if not INSTRUCTION_FILE.exists():
+        raise FileNotFoundError(
+            f"Missing: {INSTRUCTION_FILE}"
+        )
+
+    base_model = None
+    base_tokenizer = None
+
+    for candidate_model, candidate_tokenizer in PRETRAIN_CANDIDATES:
+        if candidate_model.exists() and candidate_tokenizer.exists():
+            base_model = candidate_model
+            base_tokenizer = candidate_tokenizer
+            break
+
+    if base_model is None:
+        raise FileNotFoundError(
+            "No v8 pretrained checkpoint/tokenizer found."
+        )
 
     rows = load_examples()
     train_rows, val_rows = split_by_group(
@@ -262,7 +279,7 @@ def main():
         vocab_size=4096
     )
     tokenizer.load(
-        BASE_TOKENIZER
+        base_tokenizer
     )
 
     device = (
@@ -272,7 +289,7 @@ def main():
     )
 
     checkpoint = torch.load(
-        BASE_MODEL,
+        base_model,
         map_location=device,
         weights_only=False,
     )
