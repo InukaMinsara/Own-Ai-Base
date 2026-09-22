@@ -81,6 +81,15 @@ class LocalRetriever:
         seen = set()
 
         for path in candidates:
+            # Do not index generated training wrappers as RAG sources.
+            # They contain prompt markers and repetitive synthetic text.
+            if path.name.lower() in {
+                "instructions.txt",
+                "train_v5.txt",
+                "train_v6.txt",
+            }:
+                continue
+
             try:
                 text = path.read_text(
                     encoding="utf-8"
