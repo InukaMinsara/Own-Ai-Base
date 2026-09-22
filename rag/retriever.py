@@ -70,25 +70,28 @@ class LocalRetriever:
         self.df.clear()
         self.ready = False
 
-        candidates = list(
-            (self.root / "data").rglob("*.txt")
-        )
+        source_dirs = [
+            self.root / "data" / "raw",
+            self.root / "data" / "knowledge",
+            self.root / "data" / "uploads",
+        ]
 
-        candidates += list(
-            (self.root / "data").rglob("*.md")
-        )
+        candidates = []
+
+        for source_dir in source_dirs:
+            if not source_dir.exists():
+                continue
+
+            candidates.extend(
+                source_dir.rglob("*.txt")
+            )
+            candidates.extend(
+                source_dir.rglob("*.md")
+            )
 
         seen = set()
 
         for path in candidates:
-            # Do not index generated training wrappers as RAG sources.
-            # They contain prompt markers and repetitive synthetic text.
-            if path.name.lower() in {
-                "instructions.txt",
-                "train_v5.txt",
-                "train_v6.txt",
-            }:
-                continue
 
             try:
                 text = path.read_text(
