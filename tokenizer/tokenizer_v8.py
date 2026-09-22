@@ -14,6 +14,7 @@ class OwnTokenizerV8:
 
     SPECIAL = ["<PAD>", "<UNK>", "<BOS>", "<EOS>"]
     PIECE_RE = re.compile(r"\s+|[^\s]+", re.UNICODE)
+    MAX_WHOLE_PIECE = 32
 
     def __init__(self, vocab_size=4096):
         self.target_vocab_size = int(vocab_size)
@@ -65,6 +66,8 @@ class OwnTokenizerV8:
         for piece, _freq in ranked_pieces:
             if len(vocab) >= self.target_vocab_size:
                 break
+            if len(piece) > self.MAX_WHOLE_PIECE:
+                continue
             if piece not in used:
                 vocab.append(piece)
                 used.add(piece)
@@ -90,9 +93,12 @@ class OwnTokenizerV8:
             i: token
             for token, i in self.token_to_id.items()
         }
-        self.max_piece_len = max(
-            [len(token) for token in self.token_to_id]
-            or [1]
+        self.max_piece_len = min(
+            self.MAX_WHOLE_PIECE,
+            max(
+                [len(token) for token in self.token_to_id]
+                or [1]
+            ),
         )
 
     def _encode_nonspace(self, piece):
