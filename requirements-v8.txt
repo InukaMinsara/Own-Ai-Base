@@ -1,0 +1,6 @@
+# Optional document/vision support already used by Own AI.
+Pillow
+pypdf
+python-docx
+transformers
+safetensors
