@@ -4,3 +4,6 @@ pypdf
 python-docx
 transformers
 safetensors
+google-api-python-client
+google-auth
+google-auth-oauthlib
