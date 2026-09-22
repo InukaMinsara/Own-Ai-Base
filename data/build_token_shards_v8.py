@@ -108,12 +108,8 @@ def normalize(text):
         text,
     )
     text = re.sub(
-        r"
-{4,}",
-        "
-
-
-",
+        r"\n{4,}",
+        "\n\n\n",
         text,
     )
     return text.strip()
