@@ -10,3 +10,9 @@ rag/__pycache__/
 core/__pycache__/
 chat/__pycache__/
 data/processed/*.tmp
+
+# Local application data
+data/runtime/
+data/uploads/*
+!data/uploads/.gitkeep
+*.tmp
