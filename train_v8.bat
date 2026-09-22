@@ -16,8 +16,8 @@ echo ==============================================
 echo          OWN AI v8 FULL PIPELINE
 echo ==============================================
 echo.
-echo 1. Build balanced dataset
-echo 2. Build token shards
+echo 1. Build balanced SFT dataset
+echo 2. Build token shards from local cache/cloud sync
 echo 3. Streaming pretrain v8
 echo 4. Instruction SFT
 echo.
