@@ -389,7 +389,7 @@ class Handler(BaseHTTPRequestHandler):
                         chat_id,
                     )
 
-                history = [
+                recent_history = [
                     (
                         item["role"],
                         item["content"],
@@ -397,6 +397,27 @@ class Handler(BaseHTTPRequestHandler):
                     for item
                     in chat["messages"][-8:]
                 ]
+
+                recalled = store.search_memory(
+                    username,
+                    message,
+                    top_k=4,
+                )
+
+                memory_history = [
+                    (
+                        "Memory",
+                        item["content"],
+                    )
+                    for item in recalled
+                ]
+
+                # Keep the current conversation recent turns first, then
+                # add a few relevant older memories when available.
+                history = (
+                    recent_history
+                    + memory_history
+                )[:12]
 
                 prompt = message
 
