@@ -428,8 +428,53 @@ def build_records():
                 f"conv-{idx}",
             )
 
-    random.Random(SEED).shuffle(records)
-    return records[:TARGET_EXAMPLES]
+    # Keep the training distribution balanced. Pure random truncation would
+    # let the large synthetic math pool crowd out coding, Sinhala, and chat.
+    quotas = {
+        "general": 2500,
+        "explanation": 3000,
+        "coding": 3500,
+        "sinhala": 3500,
+        "tool_use": 2000,
+        "math": 4500,
+        "conversation": 1000,
+    }
+
+    rng = random.Random(SEED)
+    by_task = {}
+
+    for item in records:
+        by_task.setdefault(
+            item["task"],
+            [],
+        ).append(item)
+
+    selected = []
+    selected_ids = set()
+
+    for task, quota in quotas.items():
+        pool = list(by_task.get(task, []))
+        rng.shuffle(pool)
+
+        for item in pool[:quota]:
+            if item["id"] not in selected_ids:
+                selected.append(item)
+                selected_ids.add(item["id"])
+
+    # Fill any remaining capacity from unused examples.
+    if len(selected) < TARGET_EXAMPLES:
+        remainder = [
+            item
+            for item in records
+            if item["id"] not in selected_ids
+        ]
+        rng.shuffle(remainder)
+        selected.extend(
+            remainder[: TARGET_EXAMPLES - len(selected)]
+        )
+
+    rng.shuffle(selected)
+    return selected[:TARGET_EXAMPLES]
 
 
 def write_corpus(records):
