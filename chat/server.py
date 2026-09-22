@@ -68,7 +68,7 @@ def safe_name(name):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "OwnAI/7.0"
+    server_version = "OwnAI/8.0"
 
     def do_GET(self):
         path = urlparse(
@@ -738,7 +738,7 @@ def main():
     )
 
     print("=" * 60)
-    print("OWN AI v7 LOCAL WEB APP")
+    print("OWN AI v8 LOCAL WEB APP")
     print("=" * 60)
     print("Stage:", engine.stage)
     print("Device:", engine.device)
