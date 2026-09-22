@@ -12,7 +12,10 @@ class LocalRetriever:
     context; it is not written into model weights.
     """
 
-    WORD_RE = re.compile(r"[a-zA-Z0-9_]+", re.UNICODE)
+    WORD_RE = re.compile(
+        r"[a-zA-Z0-9_]+",
+        re.UNICODE,
+    )
 
     def __init__(self, root):
         self.root = Path(root)
@@ -22,10 +25,19 @@ class LocalRetriever:
         self.ready = False
 
     def _words(self, text):
-        return [w.lower() for w in self.WORD_RE.findall(text)]
+        return [
+            word.lower()
+            for word in self.WORD_RE.findall(text)
+        ]
 
-    def _chunk_text(self, text, chunk_size=1200, overlap=180):
+    def _chunk_text(
+        self,
+        text,
+        chunk_size=1200,
+        overlap=180,
+    ):
         text = text.strip()
+
         if not text:
             return []
 
@@ -33,7 +45,11 @@ class LocalRetriever:
         start = 0
 
         while start < len(text):
-            end = min(len(text), start + chunk_size)
+            end = min(
+                len(text),
+                start + chunk_size,
+            )
+
             chunk = text[start:end].strip()
 
             if chunk:
@@ -42,7 +58,10 @@ class LocalRetriever:
             if end >= len(text):
                 break
 
-            start = max(0, end - overlap)
+            start = max(
+                0,
+                end - overlap,
+            )
 
         return chunks
 
@@ -51,15 +70,25 @@ class LocalRetriever:
         self.df.clear()
         self.ready = False
 
-        candidates = list((self.root / "data").rglob("*.txt"))
-        candidates += list((self.root / "data").rglob("*.md"))
+        candidates = list(
+            (self.root / "data").rglob("*.txt")
+        )
+
+        candidates += list(
+            (self.root / "data").rglob("*.md")
+        )
 
         seen = set()
 
         for path in candidates:
             try:
-                text = path.read_text(encoding="utf-8")
-            except (OSError, UnicodeDecodeError):
+                text = path.read_text(
+                    encoding="utf-8"
+                )
+            except (
+                OSError,
+                UnicodeDecodeError,
+            ):
                 continue
 
             for chunk in self._chunk_text(text):
@@ -71,6 +100,7 @@ class LocalRetriever:
                 seen.add(key)
 
                 words = self._words(chunk)
+
                 if not words:
                     continue
 
@@ -78,7 +108,11 @@ class LocalRetriever:
 
                 self.documents.append(
                     {
-                        "source": str(path.relative_to(self.root)),
+                        "source": str(
+                            path.relative_to(
+                                self.root
+                            )
+                        ),
                         "text": chunk,
                         "counts": counts,
                     }
@@ -87,20 +121,34 @@ class LocalRetriever:
                 for word in counts:
                     self.df[word] += 1
 
-        n_docs = max(1, len(self.documents))
+        n_docs = max(
+            1,
+            len(self.documents),
+        )
+
         self.idf = {
-            word: math.log((1 + n_docs) / (1 + freq)) + 1.0
+            word: math.log(
+                (1 + n_docs)
+                / (1 + freq)
+            ) + 1.0
             for word, freq in self.df.items()
         }
 
         self.ready = True
+
         return len(self.documents)
 
-    def search(self, query, top_k=3, min_score=0.05):
+    def search(
+        self,
+        query,
+        top_k=3,
+        min_score=0.05,
+    ):
         if not self.ready:
             self.build()
 
         q_words = self._words(query)
+
         if not q_words:
             return []
 
@@ -111,39 +159,70 @@ class LocalRetriever:
             score = 0.0
 
             for word, q_count in q_counts.items():
-                tf = doc["counts"].get(word, 0)
+                tf = doc["counts"].get(
+                    word,
+                    0,
+                )
 
                 if tf == 0:
                     continue
 
                 score += (
-                    (1.0 + math.log(tf))
-                    * (1.0 + math.log(q_count))
-                    * self.idf.get(word, 1.0)
+                    (
+                        1.0
+                        + math.log(tf)
+                    )
+                    * (
+                        1.0
+                        + math.log(q_count)
+                    )
+                    * self.idf.get(
+                        word,
+                        1.0,
+                    )
                 )
 
             if score >= min_score:
-                scored.append((score, doc))
+                scored.append(
+                    (score, doc)
+                )
 
-        scored.sort(key=lambda item: item[0], reverse=True)
+        scored.sort(
+            key=lambda item: item[0],
+            reverse=True,
+        )
 
         return [
             {
-                "score": round(score, 4),
+                "score": round(
+                    score,
+                    4,
+                ),
                 "source": doc["source"],
                 "text": doc["text"],
             }
             for score, doc in scored[:top_k]
         ]
 
-    def context(self, query, top_k=3, max_chars=2200):
-        results = self.search(query, top_k=top_k)
+    def context(
+        self,
+        query,
+        top_k=3,
+        max_chars=2200,
+    ):
+        results = self.search(
+            query,
+            top_k=top_k,
+        )
 
         parts = []
         used = 0
 
         for item in results:
-            block = f"[Source: {item['source']}]\n{item['text']}\n"
+            block = (
+                f"[Source: {item['source']}]\n"
+                f"{item['text']}\n"
+            )
 
             if used + len(block) > max_chars:
                 remaining = max_chars - used
