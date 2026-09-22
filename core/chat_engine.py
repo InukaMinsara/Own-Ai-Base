@@ -33,6 +33,12 @@ class OwnAIEngine:
                 OwnAIv8,
                 OwnTokenizerV8,
             ),
+            "v8-pretrain-streaming": (
+                ROOT / "checkpoints" / "own_ai_v8_streaming_best.pt",
+                ROOT / "checkpoints" / "tokenizer_v8_streaming.json",
+                OwnAIv8,
+                OwnTokenizerV8,
+            ),
             "v8-pretrain": (
                 ROOT / "checkpoints" / "own_ai_v8_pretrain_best.pt",
                 ROOT / "checkpoints" / "tokenizer_v8.json",
