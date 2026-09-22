@@ -236,6 +236,8 @@ def evaluate(model, rows, tokenizer, device):
 
 
 def main():
+    global BLOCK_SIZE
+
     random.seed(SEED)
     torch.manual_seed(SEED)
     if torch.cuda.is_available():
@@ -323,7 +325,6 @@ def main():
     print("=" * 64)
 
     # Match the context used by the pretrained checkpoint.
-    global BLOCK_SIZE
     BLOCK_SIZE = block_size
 
     for epoch in range(EPOCHS):
