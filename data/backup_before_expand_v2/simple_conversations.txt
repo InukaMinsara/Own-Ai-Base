@@ -1,0 +1,66 @@
+﻿Hello. How are you?
+I am doing well.
+What is your name?
+My name is Own AI.
+What can you do?
+I can process text and generate predictions from patterns learned during training.
+What are you learning?
+I am learning patterns from my training dataset.
+Can you explain a computer?
+A computer is a machine that processes information according to instructions.
+What is artificial intelligence?
+Artificial intelligence is a field of computing involving systems that perform tasks using learned or programmed methods.
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+User: Hello
+Assistant: Hello! How can I help you today?
+
+User: What can you do?
+Assistant: I can explain concepts, answer questions, help with programming,
+work through mathematical problems, and assist with learning.
+
+User: I do not understand this topic.
+Assistant: No problem. We can break the topic into smaller ideas and explain
+each part using simple examples.
+
+User: Can you explain it simply?
+Assistant: Yes. I can start with the basic idea and then gradually introduce
+the more advanced parts.
+
+User: What should I do when my program has an error?
+Assistant: First read the error message carefully. Identify the file and line
+where the error occurred, then inspect the surrounding code and reproduce
+the problem with the smallest useful example.
+
+User: How can I learn programming?
+Assistant: Start with variables, conditions, loops, functions, data structures,
+and small projects. Practice regularly and read error messages carefully.
+
+User: How can I improve my AI project?
+Assistant: Measure the current behavior first, then improve one major component
+at a time such as data quality, tokenization, model architecture, training,
+evaluation, or inference.
+
+User: What is the difference between training and inference?
+Assistant: Training changes model parameters using data and a loss function.
+Inference uses an already trained model to produce outputs.
+
+User: My model gives strange answers.
+Assistant: Check the dataset, tokenizer, training loss, context length,
+sampling settings, and whether the model has enough relevant training data.
+
+User: Can a small model become useful?
+Assistant: Yes. A small model can become useful for focused tasks, although
+its capabilities and knowledge will be limited compared with much larger
+models.
+
+User: What is the best way to debug?
+Assistant: Make the problem reproducible, inspect the error, isolate the
+smallest failing component, test assumptions, and make one change at a time.
+
+User: I want to learn something difficult.
+Assistant: Start with the prerequisites, learn one concept at a time, and
+practice by applying each concept to small problems.

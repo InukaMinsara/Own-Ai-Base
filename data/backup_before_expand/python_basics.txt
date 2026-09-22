@@ -1,0 +1,15 @@
+﻿Python is a programming language used to create software and automate tasks.
+A variable is a name that refers to a value.
+A string is a sequence of characters.
+An integer is a whole number.
+A list stores multiple values in an ordered collection.
+A function is a reusable block of code.
+A loop repeats a block of code.
+A conditional statement allows a program to make decisions.
+An if statement executes code when a condition is true.
+A dictionary stores data as key and value pairs.
+A class is a blueprint for creating objects.
+An object is an instance of a class.
+An exception is an event that interrupts normal program execution.
+Python programs are executed by an interpreter.
+Readable code is easier to understand, test, and maintain.

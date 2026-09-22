@@ -1,0 +1,73 @@
+﻿Technology is the practical use of scientific knowledge to solve problems.
+A computer is an electronic device that processes data according to instructions.
+Hardware refers to the physical components of a computer.
+Software is a collection of programs and instructions that tell hardware what to do.
+An operating system manages computer hardware and provides services for applications.
+Windows, Linux, and macOS are examples of desktop operating systems.
+A processor executes instructions and performs calculations.
+A graphics processing unit is specialized for highly parallel computations.
+Computer memory stores information needed by programs.
+RAM is temporary working memory used by active programs.
+A solid state drive stores data using flash memory.
+A network allows computers and other devices to communicate.
+The internet is a global network of interconnected computer networks.
+A web browser is software used to access websites and web applications.
+A programming language allows people to write instructions that computers can execute.
+Python is a general-purpose programming language commonly used for automation, data science, and artificial intelligence.
+JavaScript is widely used to create interactive web applications.
+An algorithm is a sequence of steps for solving a problem.
+A database is an organized collection of data that can be stored and retrieved.
+Artificial intelligence is a field of computing concerned with systems that perform tasks requiring forms of reasoning or pattern recognition.
+Machine learning is a method where models learn patterns from examples.
+A neural network is a mathematical model composed of interconnected computational units.
+Training is the process of adjusting model parameters using data.
+A model's parameters are numerical values learned during training.
+Inference is the process of using a trained model to produce an output.
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Technology includes tools and systems created to solve practical problems.
+Computers, networks, databases, mobile devices, and cloud services are
+examples of modern information technology.
+
+A server provides services or resources to clients. A client sends requests
+and receives responses.
+
+Cloud computing provides computing resources through network-accessible
+services. Common categories include infrastructure, platforms, and software
+services.
+
+Virtualization allows multiple isolated computing environments to operate
+on shared physical hardware. Containers provide another form of application
+isolation.
+
+The internet is a global network of interconnected networks. Routers forward
+packets between networks.
+
+DNS translates domain names into network information such as IP addresses.
+It allows users to access services using memorable names.
+
+HTTPS uses TLS to provide encrypted communication between a client and server.
+Encryption protects data while it travels across a network, although it does
+not make an entire system automatically secure.
+
+Backups create additional copies of important data. A useful backup strategy
+considers storage location, frequency, retention, and restoration testing.
+
+Version control helps developers track changes and collaborate on software.
+Branches can isolate changes before they are integrated into a main codebase.
+
+Continuous integration automatically builds and tests software when changes
+are submitted. Continuous delivery extends automation toward deployment.
+
+Web applications commonly use HTML for structure, CSS for presentation, and
+JavaScript for behavior. Modern frameworks can organize larger interfaces.
+
+A REST-style API commonly represents resources through HTTP methods and
+structured responses. Good API design considers validation, errors,
+authentication, rate limits, and versioning.
+
+Artificial intelligence is increasingly integrated into search, software
+development, education, creative tools, data analysis, and automation.

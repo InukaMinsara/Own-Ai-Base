@@ -1,0 +1,63 @@
+﻿Computers are electronic machines that process information.
+A computer uses hardware and software to perform tasks.
+The CPU is responsible for executing instructions.
+RAM is temporary memory used by running programs.
+Storage keeps data even when the computer is turned off.
+A GPU is designed to perform many calculations in parallel.
+Artificial intelligence is a field of computer science.
+Machine learning allows computers to learn patterns from data.
+Neural networks are mathematical models inspired by networks of neurons.
+A dataset is a collection of information used for analysis or training.
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+A computer is an electronic system that processes information according to
+instructions. Most modern computers contain a processor, memory, storage,
+input devices, output devices, and communication hardware.
+
+The central processing unit executes instructions. CPU performance depends
+on architecture, clock frequency, number of cores, cache, and workload.
+A higher clock frequency does not automatically mean that one CPU is faster
+for every task.
+
+Random access memory provides temporary working space for programs and data.
+RAM is generally faster than permanent storage but loses its contents when
+the computer is powered off.
+
+Storage devices keep data persistently. Hard disk drives use magnetic storage,
+while solid state drives use flash memory. SSDs generally provide much lower
+access latency than mechanical hard drives.
+
+An operating system manages hardware and provides services for applications.
+Windows, Linux, and macOS are examples of desktop operating systems.
+
+A file contains data organized according to a format. A filename extension
+often indicates the expected file type, although the extension itself does
+not determine the actual contents.
+
+Folders provide a hierarchical organization for files. A path identifies
+where a file or folder is located in a filesystem.
+
+Processes are running instances of programs. The operating system allocates
+CPU time, memory, and other resources to processes.
+
+Device drivers allow an operating system to communicate with hardware.
+Graphics processing units are specialized processors designed to perform
+large numbers of parallel operations efficiently.
+
+Computer networks allow systems to communicate. A local area network
+connects devices within a limited area, while the internet connects networks
+around the world.
+
+An IP address identifies a network interface within an addressing system.
+Domain names provide human-readable names that can resolve to network
+addresses.
+
+A web browser requests resources from web servers and displays web pages.
+HTTP and HTTPS are protocols commonly used for web communication.
+
+Software updates can fix bugs, improve compatibility, and address security
+problems. Keeping important software updated is one part of normal computer
+maintenance.

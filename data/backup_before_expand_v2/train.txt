@@ -1,0 +1,58 @@
+Hello. My name is Own AI.
+I am a small artificial intelligence model.
+I learn patterns from training data.
+I can read text and predict the next token.
+This is my first training dataset.
+Artificial intelligence uses mathematics and neural networks.
+A computer can process information very quickly.
+Machine learning allows a model to learn patterns from examples.
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+The purpose of a training dataset is to provide examples from which a model
+can learn useful statistical patterns. A dataset should be relevant to the
+model's intended tasks.
+
+High-quality training data should be clear, consistent, diverse, and
+reasonably accurate. Duplicate examples can cause a model to see some
+patterns disproportionately often.
+
+Data preprocessing can remove unwanted formatting, normalize structures,
+split documents, and create training sequences.
+
+A tokenizer maps text to numerical token identifiers. A vocabulary contains
+the token units recognized by the tokenizer.
+
+A language model training example can contain a sequence of input tokens and
+a target sequence shifted by one position. The model learns to predict the
+next token.
+
+Cross-entropy loss is commonly used for next-token prediction. Lower loss
+generally means the model assigns higher probability to the observed target
+tokens, although loss alone does not fully describe usefulness.
+
+Training and validation data should be separated. If validation examples
+are also used during training, validation results can become misleading.
+
+Batch size determines how many training examples are processed before an
+optimizer update. Larger batches may require more memory.
+
+Learning rate controls the approximate size of parameter updates. An
+excessively large learning rate can destabilize training, while an extremely
+small rate can make training slow.
+
+Gradient clipping limits unusually large gradients. Weight decay can help
+regularize some neural network training setups.
+
+A checkpoint stores model parameters and other information needed to resume
+or evaluate training. Saving the best validation checkpoint can preserve a
+model from an earlier point in training.
+
+Evaluation should include examples representing the actual intended use of
+the model. A model that memorizes training text may still perform poorly on
+new questions.
+
+Small experiments are useful when building a model from scratch. It is often
+better to verify each component independently before increasing model size.

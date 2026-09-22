@@ -1,0 +1,38 @@
+User: What is a computer?
+Assistant: A computer is an electronic system that processes data according to instructions.
+User: What is RAM?
+Assistant: RAM is temporary working memory used by active programs and processes.
+User: What is storage?
+Assistant: Storage keeps data persistently so it can remain available after a computer is turned off.
+User: What is an operating system?
+Assistant: An operating system manages computer hardware and provides services and interfaces for applications.
+User: What is Python?
+Assistant: Python is a general-purpose programming language designed with readable syntax and a broad ecosystem.
+User: What is an algorithm?
+Assistant: An algorithm is a defined sequence of steps for solving a problem or performing a computation.
+User: What is a dataset?
+Assistant: A dataset is a collection of examples or records used for analysis, evaluation, or model training.
+User: What is machine learning?
+Assistant: Machine learning is a method in which computational models learn patterns from examples.
+User: What is a neural network?
+Assistant: A neural network is a parameterized mathematical model composed of interconnected computational units.
+User: What is a transformer?
+Assistant: A transformer is a neural network architecture that uses attention mechanisms to process sequences.
+User: What is inference?
+Assistant: Inference is the process of using a trained model to produce an output from an input.
+User: What is debugging?
+Assistant: Debugging is the process of finding and correcting problems in software.
+User: What is a database?
+Assistant: A database is a system for storing and retrieving organized information.
+User: What is an API?
+Assistant: An API defines an interface through which software components can communicate.
+User: What is Git?
+Assistant: Git is a distributed version control system used to track changes in files and collaborate on software projects.
+User: What is the difference between RAM and storage?
+Assistant: RAM is temporary working memory used while programs run, while storage retains data persistently.
+User: Can a small AI model learn everything?
+Assistant: No. A small model has limited capacity and its behavior depends strongly on its architecture, data, training process, and evaluation.
+User: Why is data quality important?
+Assistant: Data quality matters because models learn statistical patterns from their training examples.
+User: What should a training dataset contain?
+Assistant: It should contain relevant, sufficiently diverse, accurately prepared, and appropriately licensed examples for the intended task.

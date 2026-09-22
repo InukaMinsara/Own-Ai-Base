@@ -1,0 +1,94 @@
+Python is a general-purpose programming language with a focus on readable syntax.
+A variable is a name associated with a value.
+An integer represents a whole number.
+A floating-point value represents a number that can contain a fractional part.
+A Boolean represents true or false.
+A string is a sequence of characters.
+A list is an ordered mutable collection.
+A tuple is an ordered collection that is normally immutable.
+A set stores unique elements.
+A dictionary maps keys to values.
+A function is reusable code that can accept arguments and return a result.
+A parameter is a named input defined by a function.
+A loop repeats code according to an iteration rule or condition.
+A for loop commonly iterates over a sequence or other iterable.
+A while loop repeats while a condition remains true.
+An if statement selects code based on a condition.
+An exception represents an unusual runtime event that can be handled by a program.
+A module is a Python file containing reusable definitions.
+A package is a collection of Python modules organized for reuse.
+A class defines data and behavior for objects in object-oriented programming.
+An object is an instance created from a class.
+Encapsulation groups related data and operations behind a defined interface.
+Inheritance allows a class to derive behavior or structure from another class.
+Polymorphism allows different object types to support a common interface.
+Recursion occurs when a function calls itself directly or indirectly.
+An algorithm is a finite sequence of steps for solving a problem.
+A data structure organizes data so it can be processed efficiently.
+An array provides indexed access to a sequence of elements.
+A stack follows last-in-first-out behavior.
+A queue follows first-in-first-out behavior.
+A linked list represents elements connected through references.
+A tree represents hierarchical relationships between nodes.
+A graph represents entities and relationships between them.
+A search algorithm locates a target within data.
+A sorting algorithm arranges elements according to an ordering rule.
+Binary search repeatedly divides a sorted search interval to locate a target.
+Time complexity describes how an algorithm's running time changes with input size.
+Space complexity describes how memory requirements change with input size.
+Debugging is the process of locating and correcting software defects.
+Testing checks whether software behaves according to specified expectations.
+
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Python is a high-level programming language known for readable syntax and
+a large standard library. Python programs can be used for automation,
+web development, scientific computing, data processing, and artificial
+intelligence research.
+
+A Python list is an ordered mutable collection. Tuples are ordered but
+immutable collections. Dictionaries store key-value associations, and sets
+store unique elements.
+
+List comprehensions provide a concise way to construct lists from iterable
+objects. They should remain readable and should not replace clearer loops
+when the logic becomes complicated.
+
+An algorithm should be selected according to the problem and the constraints.
+For a small dataset, a simple algorithm may be sufficient even if a more
+complex algorithm has better asymptotic behavior.
+
+Binary search requires an ordered search space. Each comparison can eliminate
+roughly half of the remaining candidates.
+
+A stack can be implemented using a Python list. Appending an item pushes it,
+and removing the final item pops it.
+
+A queue can be represented using collections.deque, which provides efficient
+operations at both ends.
+
+Recursion occurs when a function calls itself. Recursive algorithms require
+a base case that stops further recursive calls.
+
+Dynamic programming solves problems by storing results of overlapping
+subproblems. It can turn repeated computation into a more efficient process.
+
+Graphs can be represented using adjacency lists or adjacency matrices.
+Breadth-first search explores neighboring vertices level by level, while
+depth-first search explores one path before returning.
+
+Python's time module and other standard tools can be used to measure program
+behavior. Performance optimization should normally begin after identifying
+an actual bottleneck.
+
+Type hints document expected types and can help static analysis tools detect
+some classes of mistakes.
+
+Virtual environments isolate Python project dependencies. This helps prevent
+one project from changing the packages required by another project.
+
+Unit testing frameworks allow programmers to define expected behavior as
+automated tests. Small tests make regressions easier to detect.

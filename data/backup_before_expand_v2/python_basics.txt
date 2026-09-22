@@ -1,0 +1,63 @@
+﻿Python is a programming language used to create software and automate tasks.
+A variable is a name that refers to a value.
+A string is a sequence of characters.
+An integer is a whole number.
+A list stores multiple values in an ordered collection.
+A function is a reusable block of code.
+A loop repeats a block of code.
+A conditional statement allows a program to make decisions.
+An if statement executes code when a condition is true.
+A dictionary stores data as key and value pairs.
+A class is a blueprint for creating objects.
+An object is an instance of a class.
+An exception is an event that interrupts normal program execution.
+Python programs are executed by an interpreter.
+Readable code is easier to understand, test, and maintain.
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Python source code is usually stored in files ending with the .py extension.
+The Python interpreter reads and executes the program.
+
+The print function displays information. The input function can read text
+from a user, although applications often receive input from files, APIs,
+or graphical interfaces.
+
+Strings represent text. Python supports indexing and slicing for sequences.
+String methods can search, replace, split, join, and transform text.
+
+Integers represent whole numbers, while floating-point values represent
+numbers with fractional components. Boolean values represent true or false
+conditions.
+
+The if statement performs conditional execution. elif provides another
+condition, and else handles the remaining case.
+
+The for loop iterates over items in an iterable. The while loop continues
+while its condition remains true.
+
+A function is defined using the def keyword. Parameters describe inputs
+accepted by a function.
+
+Modules allow code to be organized across files. The import statement makes
+functions, classes, or other objects available.
+
+Python exceptions can be caught using try and except. A finally block can
+run cleanup code regardless of whether an exception occurred.
+
+Files can be opened using the open function. The with statement is commonly
+used because it automatically handles closing the file.
+
+Classes provide a way to define objects with attributes and methods.
+Object-oriented programming can help model related data and behavior.
+
+Python packages distribute reusable code. The Python Package Index contains
+many community and third-party packages.
+
+A virtual environment can be created for a project so that dependencies
+are installed independently from the global Python installation.
+
+Readable Python code generally follows consistent formatting and naming.
+PEP 8 provides widely used style recommendations for Python code.

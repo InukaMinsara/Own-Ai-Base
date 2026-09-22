@@ -1,0 +1,13 @@
+﻿Science is the systematic study of the natural world.
+Physics studies matter, energy, motion, and forces.
+Chemistry studies substances and how they interact.
+Biology studies living organisms.
+Gravity is a force that attracts objects toward one another.
+Energy is the capacity to cause change.
+Matter has mass and occupies space.
+Atoms are basic units of matter.
+Molecules are groups of atoms bonded together.
+Cells are the basic structural units of living organisms.
+Plants use photosynthesis to convert light energy into chemical energy.
+Water can exist as a solid, liquid, or gas.
+The scientific method uses observation, questions, hypotheses, experiments, and analysis.

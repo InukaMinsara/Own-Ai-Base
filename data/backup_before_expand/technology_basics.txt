@@ -1,0 +1,25 @@
+﻿Technology is the practical use of scientific knowledge to solve problems.
+A computer is an electronic device that processes data according to instructions.
+Hardware refers to the physical components of a computer.
+Software is a collection of programs and instructions that tell hardware what to do.
+An operating system manages computer hardware and provides services for applications.
+Windows, Linux, and macOS are examples of desktop operating systems.
+A processor executes instructions and performs calculations.
+A graphics processing unit is specialized for highly parallel computations.
+Computer memory stores information needed by programs.
+RAM is temporary working memory used by active programs.
+A solid state drive stores data using flash memory.
+A network allows computers and other devices to communicate.
+The internet is a global network of interconnected computer networks.
+A web browser is software used to access websites and web applications.
+A programming language allows people to write instructions that computers can execute.
+Python is a general-purpose programming language commonly used for automation, data science, and artificial intelligence.
+JavaScript is widely used to create interactive web applications.
+An algorithm is a sequence of steps for solving a problem.
+A database is an organized collection of data that can be stored and retrieved.
+Artificial intelligence is a field of computing concerned with systems that perform tasks requiring forms of reasoning or pattern recognition.
+Machine learning is a method where models learn patterns from examples.
+A neural network is a mathematical model composed of interconnected computational units.
+Training is the process of adjusting model parameters using data.
+A model's parameters are numerical values learned during training.
+Inference is the process of using a trained model to produce an output.

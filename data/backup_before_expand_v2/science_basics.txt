@@ -1,0 +1,60 @@
+﻿Science is the systematic study of the natural world.
+Physics studies matter, energy, motion, and forces.
+Chemistry studies substances and how they interact.
+Biology studies living organisms.
+Gravity is a force that attracts objects toward one another.
+Energy is the capacity to cause change.
+Matter has mass and occupies space.
+Atoms are basic units of matter.
+Molecules are groups of atoms bonded together.
+Cells are the basic structural units of living organisms.
+Plants use photosynthesis to convert light energy into chemical energy.
+Water can exist as a solid, liquid, or gas.
+The scientific method uses observation, questions, hypotheses, experiments, and analysis.
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Science is a systematic way of developing explanations about the natural
+world using observations, measurements, experiments, models, and evidence.
+
+A hypothesis is a testable proposed explanation. An experiment can be designed
+to investigate whether observations are consistent with a hypothesis.
+
+Measurements include numerical values and units. SI units provide standardized
+units for many scientific quantities.
+
+Mass measures the amount of matter in an object. Weight is a force associated
+with gravity acting on mass.
+
+Temperature describes the thermal state of a system. Heat refers to energy
+transferred because of a temperature difference.
+
+Matter can exist in different states such as solid, liquid, and gas. Changes
+of state include melting, freezing, evaporation, condensation, and sublimation.
+
+Density is mass divided by volume. It can help identify materials when other
+conditions are known.
+
+Waves transfer energy and information through oscillations. Mechanical waves
+require a medium, while electromagnetic waves can travel through vacuum.
+
+The electromagnetic spectrum includes radio waves, microwaves, infrared,
+visible light, ultraviolet, X-rays, and gamma rays.
+
+Atoms can form molecules through chemical interactions. Chemical equations
+represent transformations using formulas for reactants and products.
+
+Biological systems are organized at multiple levels, including molecules,
+cells, tissues, organs, organisms, populations, communities, and ecosystems.
+
+Evolution describes changes in inherited characteristics of populations over
+generations. Natural selection is one mechanism that can change populations.
+
+The immune system protects organisms from many biological threats. It contains
+multiple types of cells and molecular processes.
+
+The scientific method is not a single rigid sequence used for every research
+project. Scientists use different methods depending on the question and
+available evidence.

@@ -1,0 +1,70 @@
+﻿Addition combines numbers to find a total.
+Subtraction finds the difference between numbers.
+Multiplication represents repeated addition.
+Division separates a quantity into equal parts.
+A fraction represents a part of a whole.
+A percentage is a number expressed as a fraction of one hundred.
+An equation is a mathematical statement that two expressions are equal.
+A variable can represent an unknown value.
+A triangle has three sides.
+A square has four equal sides.
+The area of a rectangle is its length multiplied by its width.
+The perimeter of a rectangle is twice the sum of its length and width.
+A prime number has exactly two positive divisors.
+Zero is neither positive nor negative.
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Mathematics provides formal methods for describing quantities, relationships,
+patterns, and structures. Arithmetic is the foundation of many mathematical
+operations.
+
+Addition combines quantities. Subtraction finds a difference. Multiplication
+can represent repeated addition. Division distributes a quantity into equal
+parts or determines how many times one number fits into another.
+
+An integer can be positive, negative, or zero. A rational number can be
+written as a ratio of integers where the denominator is not zero. Real numbers
+include rational and irrational numbers.
+
+A fraction has a numerator and denominator. Equivalent fractions represent
+the same value. To add fractions with different denominators, a common
+denominator can be used.
+
+A percentage is a value expressed relative to one hundred. To convert a
+percentage to a decimal, divide by one hundred. To calculate a percentage
+of a quantity, multiply the quantity by the percentage written as a decimal.
+
+An equation states that two expressions have equal values. Solving an
+equation means finding values of the unknown that make the equality true.
+
+For a linear equation such as 3x + 5 = 20, subtracting 5 from both sides
+gives 3x = 15, and dividing by 3 gives x = 5.
+
+An exponent represents repeated multiplication. For example, a squared
+quantity is multiplied by itself. The exponent rules provide efficient ways
+to simplify expressions.
+
+A square root is a number that produces a given non-negative value when
+multiplied by itself. The square root of 25 is 5 because 5 times 5 equals 25.
+
+A ratio compares quantities. Proportions state that two ratios are equal.
+Ratios and proportions are useful in scale drawings, rates, mixtures, and
+many practical calculations.
+
+Geometry studies shapes, sizes, angles, distances, and spatial relationships.
+A triangle has three sides. The angles inside a triangle add to 180 degrees.
+
+The area of a rectangle is length multiplied by width. The area of a triangle
+is one half multiplied by its base and height. The circumference of a circle
+is related to its radius through the constant pi.
+
+Probability measures how likely an event is. A probability of zero means an
+event cannot occur, while a probability of one means the event is certain
+within the model being considered.
+
+Statistics provides methods for collecting, organizing, analyzing, and
+interpreting data. Mean, median, and mode are common measures used to
+describe data.

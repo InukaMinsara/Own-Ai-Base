@@ -1,0 +1,96 @@
+Artificial intelligence is a field of computing concerned with systems that perform tasks using algorithms, rules, search, optimization, or learned patterns.
+Machine learning is a method in which a model learns relationships from examples.
+Supervised learning uses examples paired with target outputs.
+Unsupervised learning analyzes data without requiring target labels for every example.
+Reinforcement learning trains an agent through interactions and feedback signals.
+A dataset is a collection of examples used for analysis or model development.
+A training set is used to adjust model parameters.
+A validation set helps monitor development choices.
+A test set is reserved for evaluation after development.
+A model is a mathematical or computational representation used to transform inputs into outputs.
+A parameter is a numerical value adjusted during training.
+A hyperparameter is a configuration chosen by the developer rather than learned directly from each example.
+A loss function measures disagreement between predictions and target values.
+An optimizer updates model parameters using gradients or another optimization method.
+Gradient descent changes parameters in a direction intended to reduce loss.
+A learning rate controls the approximate size of optimization updates.
+An epoch is one complete pass through a training dataset.
+A batch is a group of examples processed together.
+A neural network is a parameterized mathematical function composed of layers or computational units.
+An activation function introduces nonlinear behavior into neural networks.
+A transformer is a neural network architecture based heavily on attention mechanisms.
+Attention allows a model to assign different importance to parts of a sequence when producing a representation.
+Self-attention relates tokens within the same sequence.
+A language model estimates or predicts sequences of tokens.
+A causal language model predicts later tokens from earlier context.
+Tokenization converts text into a sequence of discrete units called tokens.
+A vocabulary defines the token IDs available to a tokenizer.
+A context window is the maximum sequence length a model can process at once.
+Inference means using a trained model to produce outputs.
+Overfitting occurs when a model learns training examples too specifically and generalizes poorly.
+Underfitting occurs when a model fails to learn important patterns in the data.
+Data quality, diversity, relevance, and licensing are important considerations when building a dataset.
+A checkpoint is a saved model state that can be loaded later.
+
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Artificial intelligence is the study of computer systems that perform tasks
+that normally require human reasoning, perception, language understanding,
+learning, or decision making. An AI system receives information, processes
+that information, and produces an output according to its model or rules.
+
+Machine learning is a major area of artificial intelligence. Instead of
+writing every rule manually, a machine learning system can learn patterns
+from examples. Training data contains examples from which model parameters
+are adjusted.
+
+Supervised learning uses examples that contain inputs and expected outputs.
+Classification predicts a category, while regression predicts a numerical
+value. Unsupervised learning works with data where expected labels are not
+provided. Clustering is one example of unsupervised learning.
+
+A neural network contains layers of mathematical operations. A basic neural
+network can transform an input vector through weighted connections and
+activation functions. During training, a loss function measures the difference
+between a prediction and the desired result. An optimizer changes parameters
+to reduce the loss.
+
+Deep learning uses neural networks with many layers. Convolutional networks
+are commonly associated with image processing. Recurrent architectures were
+designed for sequential data. Transformer architectures use attention
+mechanisms to process relationships between tokens.
+
+A language model predicts tokens based on context. Tokenization converts
+text into smaller units that a model can process. During training, a causal
+language model learns to predict the next token from previous tokens.
+
+Attention allows a model to assign different importance to different parts
+of an input sequence. Self-attention compares representations within the
+same sequence. Multi-head attention performs several attention operations
+in parallel.
+
+A transformer normally contains attention layers, feed-forward layers,
+normalization, residual connections, token embeddings, and positional
+information. Training requires numerical data, a loss function, an optimizer,
+and many parameter updates.
+
+Model quality depends on many factors including data quality, model size,
+training procedure, tokenization, context length, and evaluation. Increasing
+the amount of data alone does not guarantee a better model.
+
+Overfitting happens when a model learns the training examples too closely
+and performs poorly on unseen examples. Validation data helps estimate how
+well a model generalizes.
+
+AI systems should be evaluated with representative tests. A useful evaluation
+set should contain questions and tasks that were not simply copied into the
+training data. Accuracy is useful for some tasks, while other tasks require
+different evaluation measures.
+
+A small AI model can still be useful for education, experimentation,
+classification, text generation, summarization, and specialized tasks.
+Building a small model is also a useful way to understand how modern AI
+systems work internally.

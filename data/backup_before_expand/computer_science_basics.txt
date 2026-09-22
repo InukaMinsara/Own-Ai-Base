@@ -1,0 +1,32 @@
+Computer science studies computation, information, algorithms, software, and computational systems.
+A computer is an electronic system that processes data according to instructions.
+Hardware is the physical part of a computer system.
+Software is a collection of instructions and data used by a computer.
+The CPU executes instructions and performs general-purpose calculations.
+A GPU performs many operations in parallel and is useful for graphics and machine learning.
+RAM stores data and instructions needed by actively running programs.
+Persistent storage retains data when power is removed.
+An operating system manages hardware resources and provides services for applications.
+A process is a running instance of a program.
+A thread is a sequence of instructions that can execute within a process.
+A file is a named collection of stored data.
+A directory or folder organizes files and other directories.
+A path identifies the location of a file or directory.
+A network allows devices to exchange information.
+The internet is a global system of interconnected networks.
+An IP address identifies a network interface using an internet protocol address.
+A domain name is a human-readable name associated with an internet service.
+HTTP is a protocol used for transferring web resources.
+HTTPS is HTTP protected by a cryptographic security layer.
+A web browser retrieves and displays web resources.
+A server provides data or services to clients.
+A client requests services or resources from a server.
+An API defines an interface through which software components communicate.
+A database stores and organizes structured information for retrieval and modification.
+A cache stores frequently used information to reduce repeated work.
+Compression represents data using fewer bits when possible.
+Encryption transforms information so that only authorized parties with the appropriate key can recover it.
+Authentication verifies an identity or credential.
+Authorization determines which actions an authenticated identity is allowed to perform.
+A backup is a separate copy of data kept for recovery.
+Version control records changes to files so work can be reviewed and restored.

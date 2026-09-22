@@ -1,0 +1,112 @@
+User: What is a computer?
+Assistant: A computer is an electronic system that processes data according to instructions.
+User: What is RAM?
+Assistant: RAM is temporary working memory used by active programs and processes.
+User: What is storage?
+Assistant: Storage keeps data persistently so it can remain available after a computer is turned off.
+User: What is an operating system?
+Assistant: An operating system manages computer hardware and provides services and interfaces for applications.
+User: What is Python?
+Assistant: Python is a general-purpose programming language designed with readable syntax and a broad ecosystem.
+User: What is an algorithm?
+Assistant: An algorithm is a defined sequence of steps for solving a problem or performing a computation.
+User: What is a dataset?
+Assistant: A dataset is a collection of examples or records used for analysis, evaluation, or model training.
+User: What is machine learning?
+Assistant: Machine learning is a method in which computational models learn patterns from examples.
+User: What is a neural network?
+Assistant: A neural network is a parameterized mathematical model composed of interconnected computational units.
+User: What is a transformer?
+Assistant: A transformer is a neural network architecture that uses attention mechanisms to process sequences.
+User: What is inference?
+Assistant: Inference is the process of using a trained model to produce an output from an input.
+User: What is debugging?
+Assistant: Debugging is the process of finding and correcting problems in software.
+User: What is a database?
+Assistant: A database is a system for storing and retrieving organized information.
+User: What is an API?
+Assistant: An API defines an interface through which software components can communicate.
+User: What is Git?
+Assistant: Git is a distributed version control system used to track changes in files and collaborate on software projects.
+User: What is the difference between RAM and storage?
+Assistant: RAM is temporary working memory used while programs run, while storage retains data persistently.
+User: Can a small AI model learn everything?
+Assistant: No. A small model has limited capacity and its behavior depends strongly on its architecture, data, training process, and evaluation.
+User: Why is data quality important?
+Assistant: Data quality matters because models learn statistical patterns from their training examples.
+User: What should a training dataset contain?
+Assistant: It should contain relevant, sufficiently diverse, accurately prepared, and appropriately licensed examples for the intended task.
+
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Question: What is a computer?
+Answer: A computer is an electronic system that processes information
+according to instructions.
+
+Question: What is a program?
+Answer: A program is a set of instructions that a computer can execute.
+
+Question: What is machine learning?
+Answer: Machine learning is a method in which computational models learn
+patterns from data.
+
+Question: What is a neural network?
+Answer: A neural network is a computational model composed of connected
+mathematical transformations that can learn parameters from examples.
+
+Question: What is a token?
+Answer: A token is a unit of text processed by a language model.
+
+Question: What is an algorithm?
+Answer: An algorithm is a defined sequence of steps for solving a problem.
+
+Question: What is RAM?
+Answer: RAM is temporary computer memory used to hold active programs and data.
+
+Question: What is an operating system?
+Answer: An operating system manages computer hardware and provides services
+for applications.
+
+Question: What is a database?
+Answer: A database is a structured system for storing and retrieving data.
+
+Question: What is an API?
+Answer: An API is a defined interface that allows software components to
+communicate.
+
+Question: What is Python?
+Answer: Python is a general-purpose programming language with readable syntax.
+
+Question: What is a variable?
+Answer: A variable is a named reference to a value used by a program.
+
+Question: What is a function?
+Answer: A function is a reusable unit of code that performs a defined operation.
+
+Question: What is probability?
+Answer: Probability is a mathematical way of representing the likelihood
+of an event.
+
+Question: What is gravity?
+Answer: Gravity is an interaction associated with mass and energy that causes
+objects to attract one another.
+
+Question: What is DNA?
+Answer: DNA is a molecule that stores genetic information in living organisms.
+
+Question: What is photosynthesis?
+Answer: Photosynthesis is a biological process that converts light energy
+into chemical energy in organisms capable of performing it.
+
+Question: What is a database table?
+Answer: A database table organizes related records into rows and columns.
+
+Question: What is debugging?
+Answer: Debugging is the process of finding and correcting problems in software.
+
+Question: What is a compiler?
+Answer: A compiler translates source code into another representation that can
+be executed or processed by a computer system.

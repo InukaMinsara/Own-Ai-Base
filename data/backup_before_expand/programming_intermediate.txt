@@ -1,0 +1,142 @@
+﻿A program is a sequence of instructions that a computer can execute.
+
+
+An algorithm is a finite sequence of well-defined steps used to solve a problem.
+
+
+A programming language provides rules for expressing algorithms as executable instructions.
+
+
+A variable allows a program to store and refer to a value.
+
+
+A data type describes the kind of value stored by a variable.
+
+
+An integer represents a whole number.
+
+
+A floating-point number represents a number that can contain a fractional part.
+
+
+A Boolean value represents either true or false.
+
+
+A string represents a sequence of characters.
+
+
+A list is an ordered collection of values.
+
+
+A tuple is an ordered collection that is generally immutable.
+
+
+A dictionary stores associations between keys and values.
+
+
+A set stores unique values without requiring duplicate elements.
+
+
+A function is a reusable section of code that performs a specific operation.
+
+
+A function can receive input through parameters and can return a result.
+
+
+A loop allows a program to execute a block of code repeatedly.
+
+
+A for loop commonly iterates over the elements of a collection.
+
+
+A while loop repeatedly executes code while a condition remains true.
+
+
+A conditional statement allows a program to choose between different execution paths.
+
+
+An if statement executes a block when its condition is true.
+
+
+An else statement provides an alternative block when the preceding condition is false.
+
+
+An exception is an event that interrupts the normal flow of program execution.
+
+
+Exception handling allows a program to respond to certain runtime errors.
+
+
+A module is a file containing reusable program code.
+
+
+A library is a collection of reusable software components.
+
+
+An API is an interface that allows one software system to communicate with another.
+
+
+An input is information provided to a program.
+
+
+An output is information produced by a program.
+
+
+A compiler translates source code into another form that can be executed or further processed.
+
+
+An interpreter executes program instructions through a runtime system.
+
+
+Debugging is the process of finding and correcting problems in software.
+
+
+Testing is the process of checking whether software behaves as expected.
+
+
+A syntax error occurs when code does not follow the rules of a programming language.
+
+
+A logical error occurs when a program runs but produces an incorrect result.
+
+
+An object is an instance of a class in object-oriented programming.
+
+
+A class defines the structure and behavior that objects created from it can have.
+
+
+Encapsulation groups data and related operations within a defined software structure.
+
+
+Inheritance allows one class to derive characteristics and behavior from another class.
+
+
+Polymorphism allows different objects to respond to the same interface in different ways.
+
+
+Recursion occurs when a function calls itself to solve a problem.
+
+
+A data structure is a method of organizing data so that it can be accessed and modified efficiently.
+
+
+A stack follows the last-in-first-out principle.
+
+
+A queue follows the first-in-first-out principle.
+
+
+A search algorithm finds a target value within a collection of data.
+
+
+A sorting algorithm arranges elements according to a specified ordering.
+
+
+Time complexity describes how the running time of an algorithm changes as the input size grows.
+
+
+Space complexity describes how the memory requirements of an algorithm change as the input size grows.
+
+
+Readable and maintainable code is easier to test, debug, modify, and reuse.

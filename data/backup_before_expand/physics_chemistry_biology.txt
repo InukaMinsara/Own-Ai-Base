@@ -1,0 +1,33 @@
+Physics studies matter, energy, motion, forces, and interactions.
+Motion describes a change in position over time.
+Speed describes distance traveled per unit of time.
+Velocity describes speed together with direction.
+Acceleration describes how velocity changes over time.
+A force is an interaction that can change motion or shape.
+Mass measures an object's resistance to changes in motion and is related to its amount of matter.
+Gravity is an interaction that attracts objects with mass toward one another.
+Energy is a quantity associated with the ability of a system to cause change.
+Kinetic energy is associated with motion.
+Potential energy is associated with position or configuration.
+Temperature describes the thermal state of a system.
+Heat is energy transferred because of a temperature difference.
+An electric current is the movement of electric charge through a medium.
+Voltage is a difference in electric potential.
+Resistance describes opposition to electric current.
+Chemistry studies substances, their properties, and their transformations.
+An atom is a basic unit of an element that retains the element's chemical identity.
+A molecule is a group of atoms connected by chemical bonds.
+An element is a substance defined by its number of protons.
+A compound contains atoms of different elements chemically combined.
+A chemical reaction rearranges atoms and changes substances into new substances.
+A solution is a homogeneous mixture in which one or more substances are dissolved in another.
+A pH scale is commonly used to describe the acidity or basicity of aqueous solutions.
+Biology studies living organisms and biological processes.
+A cell is a basic structural and functional unit of life.
+DNA stores hereditary information in many living organisms.
+Genes are regions of genetic material associated with biological information.
+Photosynthesis allows plants and some other organisms to convert light energy into stored chemical energy.
+Cellular respiration is a set of processes used by cells to obtain usable energy from molecules.
+An ecosystem contains organisms and their physical environment and the interactions between them.
+A population is a group of organisms of the same species living in a particular area.
+An adaptation is a heritable characteristic that can contribute to survival or reproduction in a particular environment.

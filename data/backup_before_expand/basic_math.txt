@@ -1,0 +1,14 @@
+﻿Addition combines numbers to find a total.
+Subtraction finds the difference between numbers.
+Multiplication represents repeated addition.
+Division separates a quantity into equal parts.
+A fraction represents a part of a whole.
+A percentage is a number expressed as a fraction of one hundred.
+An equation is a mathematical statement that two expressions are equal.
+A variable can represent an unknown value.
+A triangle has three sides.
+A square has four equal sides.
+The area of a rectangle is its length multiplied by its width.
+The perimeter of a rectangle is twice the sum of its length and width.
+A prime number has exactly two positive divisors.
+Zero is neither positive nor negative.

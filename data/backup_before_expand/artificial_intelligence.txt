@@ -1,0 +1,33 @@
+Artificial intelligence is a field of computing concerned with systems that perform tasks using algorithms, rules, search, optimization, or learned patterns.
+Machine learning is a method in which a model learns relationships from examples.
+Supervised learning uses examples paired with target outputs.
+Unsupervised learning analyzes data without requiring target labels for every example.
+Reinforcement learning trains an agent through interactions and feedback signals.
+A dataset is a collection of examples used for analysis or model development.
+A training set is used to adjust model parameters.
+A validation set helps monitor development choices.
+A test set is reserved for evaluation after development.
+A model is a mathematical or computational representation used to transform inputs into outputs.
+A parameter is a numerical value adjusted during training.
+A hyperparameter is a configuration chosen by the developer rather than learned directly from each example.
+A loss function measures disagreement between predictions and target values.
+An optimizer updates model parameters using gradients or another optimization method.
+Gradient descent changes parameters in a direction intended to reduce loss.
+A learning rate controls the approximate size of optimization updates.
+An epoch is one complete pass through a training dataset.
+A batch is a group of examples processed together.
+A neural network is a parameterized mathematical function composed of layers or computational units.
+An activation function introduces nonlinear behavior into neural networks.
+A transformer is a neural network architecture based heavily on attention mechanisms.
+Attention allows a model to assign different importance to parts of a sequence when producing a representation.
+Self-attention relates tokens within the same sequence.
+A language model estimates or predicts sequences of tokens.
+A causal language model predicts later tokens from earlier context.
+Tokenization converts text into a sequence of discrete units called tokens.
+A vocabulary defines the token IDs available to a tokenizer.
+A context window is the maximum sequence length a model can process at once.
+Inference means using a trained model to produce outputs.
+Overfitting occurs when a model learns training examples too specifically and generalizes poorly.
+Underfitting occurs when a model fails to learn important patterns in the data.
+Data quality, diversity, relevance, and licensing are important considerations when building a dataset.
+A checkpoint is a saved model state that can be loaded later.

@@ -1,0 +1,90 @@
+Addition combines quantities.
+Subtraction finds a difference between quantities.
+Multiplication can represent repeated addition or scaling.
+Division distributes a quantity into equal parts or determines a quotient.
+A fraction represents a ratio of integers or a part of a whole.
+A percentage represents a value per one hundred.
+A ratio compares quantities using division.
+An equation states that two expressions have equal values.
+A variable represents a value that may be unknown or change.
+A constant has a fixed value within a defined problem.
+An expression combines values, variables, and operations.
+An exponent represents repeated multiplication of a base by itself for positive integer powers.
+A square is a number multiplied by itself.
+A square root is a number that produces a given value when squared.
+A prime number has exactly two positive divisors: one and itself.
+A composite number has more than two positive divisors.
+Zero is an integer and is neither positive nor negative.
+An even integer is divisible by two.
+An odd integer is not divisible by two.
+The perimeter of a rectangle is twice the sum of its length and width.
+The area of a rectangle is length multiplied by width.
+The area of a triangle is one half multiplied by base and height.
+The circumference of a circle is related to its radius and the constant pi.
+The area of a circle is pi multiplied by the square of its radius.
+An angle measures rotation between two rays.
+A triangle has three sides and three interior angles.
+A right angle measures ninety degrees.
+A linear equation can contain a variable to the first power.
+An inequality compares values using symbols such as less than or greater than.
+A function maps inputs to outputs according to a defined rule.
+A coordinate system represents positions using numerical coordinates.
+The Cartesian plane uses perpendicular horizontal and vertical axes.
+A mean is calculated by dividing the sum of values by the number of values.
+A median is the middle value after ordered data is considered, with averaging used for an even count.
+A mode is a value that occurs most frequently in a dataset.
+Probability measures how likely an event is under a defined probability model.
+
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Algebra represents quantities using symbols and provides rules for manipulating
+expressions and equations. Variables represent values that may be unknown
+or may change.
+
+A polynomial is an expression containing variables and non-negative integer
+powers with coefficients. Linear and quadratic expressions are common
+polynomial forms.
+
+The quadratic formula can be used to solve a quadratic equation when the
+equation is written in standard form. The discriminant indicates whether
+the equation has two distinct real solutions, one repeated real solution,
+or complex solutions.
+
+Functions describe relationships between inputs and outputs. A function
+assigns each allowed input a corresponding output according to its rule.
+
+The domain is the set of allowed input values. The range is the set of
+resulting output values.
+
+A linear function has a constant rate of change. Its graph is a straight
+line. The slope describes how much the output changes when the input changes
+by one unit.
+
+Systems of equations contain multiple equations involving common variables.
+A solution must satisfy all equations in the system.
+
+Exponential functions involve variables in exponents. They can describe
+growth or decay processes.
+
+Logarithms are inverse operations to exponentiation. A logarithm answers
+the question of which exponent is required to produce a particular value.
+
+Calculus studies change and accumulation. A derivative measures an instantaneous
+rate of change, while an integral represents accumulation and can be used
+to calculate areas under curves.
+
+A limit describes the value that a mathematical expression approaches under
+a specified condition. Limits provide a foundation for derivatives and
+integrals.
+
+Vectors have magnitude and direction. They can represent displacement,
+velocity, force, and many other quantities.
+
+Matrices organize numbers into rows and columns. Matrix operations are
+used in linear algebra, graphics, scientific computing, and machine learning.
+
+A mathematical proof is a logical argument showing why a statement follows
+from accepted definitions, assumptions, and previously established results.

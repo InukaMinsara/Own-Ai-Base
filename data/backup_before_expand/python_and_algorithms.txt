@@ -1,0 +1,40 @@
+Python is a general-purpose programming language with a focus on readable syntax.
+A variable is a name associated with a value.
+An integer represents a whole number.
+A floating-point value represents a number that can contain a fractional part.
+A Boolean represents true or false.
+A string is a sequence of characters.
+A list is an ordered mutable collection.
+A tuple is an ordered collection that is normally immutable.
+A set stores unique elements.
+A dictionary maps keys to values.
+A function is reusable code that can accept arguments and return a result.
+A parameter is a named input defined by a function.
+A loop repeats code according to an iteration rule or condition.
+A for loop commonly iterates over a sequence or other iterable.
+A while loop repeats while a condition remains true.
+An if statement selects code based on a condition.
+An exception represents an unusual runtime event that can be handled by a program.
+A module is a Python file containing reusable definitions.
+A package is a collection of Python modules organized for reuse.
+A class defines data and behavior for objects in object-oriented programming.
+An object is an instance created from a class.
+Encapsulation groups related data and operations behind a defined interface.
+Inheritance allows a class to derive behavior or structure from another class.
+Polymorphism allows different object types to support a common interface.
+Recursion occurs when a function calls itself directly or indirectly.
+An algorithm is a finite sequence of steps for solving a problem.
+A data structure organizes data so it can be processed efficiently.
+An array provides indexed access to a sequence of elements.
+A stack follows last-in-first-out behavior.
+A queue follows first-in-first-out behavior.
+A linked list represents elements connected through references.
+A tree represents hierarchical relationships between nodes.
+A graph represents entities and relationships between them.
+A search algorithm locates a target within data.
+A sorting algorithm arranges elements according to an ordering rule.
+Binary search repeatedly divides a sorted search interval to locate a target.
+Time complexity describes how an algorithm's running time changes with input size.
+Space complexity describes how memory requirements change with input size.
+Debugging is the process of locating and correcting software defects.
+Testing checks whether software behaves according to specified expectations.

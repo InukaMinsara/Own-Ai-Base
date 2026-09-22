@@ -1,0 +1,95 @@
+Physics studies matter, energy, motion, forces, and interactions.
+Motion describes a change in position over time.
+Speed describes distance traveled per unit of time.
+Velocity describes speed together with direction.
+Acceleration describes how velocity changes over time.
+A force is an interaction that can change motion or shape.
+Mass measures an object's resistance to changes in motion and is related to its amount of matter.
+Gravity is an interaction that attracts objects with mass toward one another.
+Energy is a quantity associated with the ability of a system to cause change.
+Kinetic energy is associated with motion.
+Potential energy is associated with position or configuration.
+Temperature describes the thermal state of a system.
+Heat is energy transferred because of a temperature difference.
+An electric current is the movement of electric charge through a medium.
+Voltage is a difference in electric potential.
+Resistance describes opposition to electric current.
+Chemistry studies substances, their properties, and their transformations.
+An atom is a basic unit of an element that retains the element's chemical identity.
+A molecule is a group of atoms connected by chemical bonds.
+An element is a substance defined by its number of protons.
+A compound contains atoms of different elements chemically combined.
+A chemical reaction rearranges atoms and changes substances into new substances.
+A solution is a homogeneous mixture in which one or more substances are dissolved in another.
+A pH scale is commonly used to describe the acidity or basicity of aqueous solutions.
+Biology studies living organisms and biological processes.
+A cell is a basic structural and functional unit of life.
+DNA stores hereditary information in many living organisms.
+Genes are regions of genetic material associated with biological information.
+Photosynthesis allows plants and some other organisms to convert light energy into stored chemical energy.
+Cellular respiration is a set of processes used by cells to obtain usable energy from molecules.
+An ecosystem contains organisms and their physical environment and the interactions between them.
+A population is a group of organisms of the same species living in a particular area.
+An adaptation is a heritable characteristic that can contribute to survival or reproduction in a particular environment.
+
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+Physics studies matter, energy, motion, forces, fields, waves, and interactions.
+Classical mechanics describes many everyday motions using concepts such as
+position, velocity, acceleration, mass, and force.
+
+Newton's laws provide a framework for describing motion and forces. A net
+force can cause acceleration according to the relationship between force,
+mass, and acceleration.
+
+Energy is a quantity associated with the ability of a system to produce
+change. Kinetic energy is associated with motion, while potential energy
+depends on position or configuration.
+
+Electric charge is a fundamental physical property. Electric current is
+the movement of charge through a conducting system.
+
+Voltage represents electric potential difference. Resistance describes how
+strongly a component opposes electric current. Ohm's law relates voltage,
+current, and resistance for components that follow the relationship.
+
+Chemistry studies matter, its composition, properties, and transformations.
+Atoms contain nuclei made from protons and neutrons and are surrounded by
+electrons.
+
+Elements are defined by their atomic number, which corresponds to the number
+of protons in the nucleus. The periodic table organizes chemical elements
+according to their properties and atomic structure.
+
+Chemical bonds hold atoms together in molecules and compounds. Ionic bonding
+involves electrostatic attraction between oppositely charged ions, while
+covalent bonding involves shared electrons.
+
+A chemical reaction transforms reactants into products. Conservation of mass
+requires that atoms are accounted for on both sides of a balanced reaction.
+
+Acids and bases have characteristic chemical behaviors. The pH scale is
+commonly used to describe the acidity or basicity of aqueous solutions.
+
+Biology studies living systems. Cells are the basic structural and functional
+units of life.
+
+DNA stores genetic information in living organisms. Genes are regions of
+DNA that contribute to biological characteristics through complex molecular
+processes.
+
+Proteins perform many functions including structural support, transport,
+signaling, and catalysis. Enzymes are biological catalysts that can increase
+the rate of chemical reactions.
+
+Photosynthesis allows plants, algae, and some microorganisms to convert light
+energy into stored chemical energy.
+
+Cellular respiration involves biochemical pathways that release usable energy
+from molecules. ATP is an important energy-carrying molecule in cells.
+
+Ecology examines interactions among organisms and their environments.
+Ecosystems contain living organisms and nonliving environmental factors.

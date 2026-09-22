@@ -1,0 +1,82 @@
+A web application is software accessed through a web browser.
+HTML describes the structure of a web page.
+CSS describes presentation and layout for web content.
+JavaScript adds behavior and interactive logic to web pages.
+A frontend is the part of an application that users directly interact with.
+A backend provides server-side logic, data access, authentication, or other services.
+A REST API commonly exposes resources through HTTP methods and structured responses.
+JSON is a text format commonly used to represent structured data.
+A request sends information from a client to a server.
+A response carries a result from a server to a client.
+A database query asks a database to retrieve or modify information.
+SQL is a language commonly used to work with relational databases.
+A table organizes relational data into rows and columns.
+A primary key identifies a row within a table.
+A foreign key represents a relationship between tables.
+An index can accelerate certain database lookups by maintaining an additional searchable structure.
+Git is a distributed version control system.
+A repository stores project files and version history.
+A commit records a set of changes in version control.
+A branch is an independent line of development.
+A merge combines changes from different lines of development.
+A pull request is a proposed set of repository changes for review and integration.
+A dependency is an external component required by a software project.
+A package manager installs and manages software dependencies.
+A virtual environment isolates Python project dependencies.
+A compiler translates source code into another representation.
+An interpreter executes code through a runtime system.
+A build process transforms source files into deployable or executable outputs.
+Continuous integration automatically runs checks when project changes are submitted.
+Deployment makes a software application available in a target environment.
+
+
+============================================================
+ORIGINAL OWN AI TRAINING MATERIAL
+============================================================
+
+The web is built around communication between clients and servers. A browser
+acts as a client and requests resources from servers.
+
+HTML describes the structure of a web document. Elements can represent
+headings, paragraphs, links, images, forms, tables, and other content.
+
+CSS controls presentation. Selectors identify elements, while properties
+define visual and layout behavior.
+
+JavaScript adds interactive behavior to web pages. It can respond to events,
+modify the document, communicate with APIs, and manage application state.
+
+A frontend application runs primarily on the user's device. A backend
+application runs on a server and can handle authentication, business logic,
+database access, and external services.
+
+HTTP requests contain methods, headers, and sometimes a body. Common methods
+include GET, POST, PUT, PATCH, and DELETE.
+
+HTTP status codes communicate the general result of a request. Successful
+responses commonly use codes in the 200 range, client errors in the 400
+range, and server errors in the 500 range.
+
+JSON is frequently used to exchange structured data between web applications.
+Its simple structure makes it convenient for many APIs.
+
+A database query retrieves or modifies stored information. Parameterized
+queries help prevent many classes of injection problems.
+
+Frontend applications often use state to represent changing information.
+State management becomes important when multiple components depend on the
+same data.
+
+Caching can reduce repeated work by storing reusable results. Cache design
+must consider freshness and invalidation.
+
+Responsive design allows interfaces to adapt to different screen sizes.
+Accessibility helps ensure that websites can be used by people with
+different abilities and assistive technologies.
+
+Web performance depends on factors such as network latency, asset size,
+JavaScript execution, rendering, server response time, and caching.
+
+Good web applications validate inputs, handle errors, protect credentials,
+use secure communication, and expose only the functionality necessary for
+each user or service.
