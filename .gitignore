@@ -1,11 +1,12 @@
-.venv/ 
-__pycache__/ 
-*.pyc 
-.env 
 .venv/
-.venv/
+__pycache__/
+*.pyc
+.env
 data/token.json
 client_secret_*.json
-.venv/
-data/token.json
-client_secret_*.json
+
+# Local/generated runtime files
+rag/__pycache__/
+core/__pycache__/
+chat/__pycache__/
+data/processed/*.tmp
