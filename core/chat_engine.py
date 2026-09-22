@@ -9,7 +9,9 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from tokenizer.tokenizer import OwnTokenizer
+from tokenizer.tokenizer_v7 import OwnTokenizerV7
 from model.own_ai import OwnAI
+from model.own_ai_v7 import OwnAIv7
 from rag.retriever import LocalRetriever
 from tools.tool_router import ToolRouter
 
@@ -20,6 +22,30 @@ class OwnAIEngine:
             "cuda"
             if torch.cuda.is_available()
             else "cpu"
+        )
+
+        v7_sft_checkpoint = (
+            ROOT
+            / "checkpoints"
+            / "own_ai_v7_sft_best.pt"
+        )
+
+        v7_sft_tokenizer = (
+            ROOT
+            / "checkpoints"
+            / "tokenizer_v7_sft.json"
+        )
+
+        v7_pretrain_checkpoint = (
+            ROOT
+            / "checkpoints"
+            / "own_ai_v7_pretrain_best.pt"
+        )
+
+        v7_pretrain_tokenizer = (
+            ROOT
+            / "checkpoints"
+            / "tokenizer_v7.json"
         )
 
         sft_checkpoint = (
@@ -47,24 +73,41 @@ class OwnAIEngine:
         )
 
         if (
+            v7_sft_checkpoint.exists()
+            and v7_sft_tokenizer.exists()
+        ):
+            self.checkpoint_path = v7_sft_checkpoint
+            self.tokenizer_path = v7_sft_tokenizer
+            self.stage = "v7-sft"
+            self.model_class = OwnAIv7
+            self.tokenizer_class = OwnTokenizerV7
+
+        elif (
+            v7_pretrain_checkpoint.exists()
+            and v7_pretrain_tokenizer.exists()
+        ):
+            self.checkpoint_path = v7_pretrain_checkpoint
+            self.tokenizer_path = v7_pretrain_tokenizer
+            self.stage = "v7-pretrain"
+            self.model_class = OwnAIv7
+            self.tokenizer_class = OwnTokenizerV7
+
+        elif (
             sft_checkpoint.exists()
             and sft_tokenizer.exists()
         ):
-            self.checkpoint_path = (
-                sft_checkpoint
-            )
-            self.tokenizer_path = (
-                sft_tokenizer
-            )
+            self.checkpoint_path = sft_checkpoint
+            self.tokenizer_path = sft_tokenizer
             self.stage = "v6-sft"
+            self.model_class = OwnAI
+            self.tokenizer_class = OwnTokenizer
+
         else:
-            self.checkpoint_path = (
-                base_checkpoint
-            )
-            self.tokenizer_path = (
-                base_tokenizer
-            )
+            self.checkpoint_path = base_checkpoint
+            self.tokenizer_path = base_tokenizer
             self.stage = "base"
+            self.model_class = OwnAI
+            self.tokenizer_class = OwnTokenizer
 
         if not self.checkpoint_path.exists():
             raise FileNotFoundError(
@@ -76,8 +119,12 @@ class OwnAIEngine:
                 "No tokenizer checkpoint found."
             )
 
-        self.tokenizer = OwnTokenizer(
-            vocab_size=512
+        self.tokenizer = self.tokenizer_class(
+            vocab_size=(
+                2048
+                if self.stage.startswith("v7")
+                else 512
+            )
         )
 
         self.tokenizer.load(
@@ -90,7 +137,7 @@ class OwnAIEngine:
             weights_only=False,
         )
 
-        self.model = OwnAI(
+        self.model = self.model_class(
             vocab_size=checkpoint["vocab_size"],
             block_size=checkpoint["block_size"],
             d_model=checkpoint["d_model"],
@@ -110,7 +157,12 @@ class OwnAIEngine:
         self.model.eval()
 
         self.eos_id = (
-            self.tokenizer.token_to_id[
+            self.tokenizer.eos_id
+            if hasattr(
+                self.tokenizer,
+                "eos_id",
+            )
+            else self.tokenizer.token_to_id[
                 self.tokenizer.eos_token
             ]
         )
@@ -433,7 +485,12 @@ class OwnAIEngine:
         )
 
         bos_id = (
-            self.tokenizer.token_to_id[
+            self.tokenizer.bos_id
+            if hasattr(
+                self.tokenizer,
+                "bos_id",
+            )
+            else self.tokenizer.token_to_id[
                 self.tokenizer.bos_token
             ]
         )
