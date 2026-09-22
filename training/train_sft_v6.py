@@ -389,12 +389,42 @@ def main():
         weights_only=False,
     )
 
+    state = checkpoint["model_state"]
+
+    # Read the architecture from the actual tensors.
+    # This protects SFT from stale metadata inside older checkpoints.
+    vocab_size = state["token_embedding.weight"].shape[0]
+    d_model = state["token_embedding.weight"].shape[1]
+    block_size = state["position_embedding.weight"].shape[0]
+
+    layer_ids = []
+    for key in state:
+        match = re.match(r"blocks\.(\d+)\.", key)
+        if match:
+            layer_ids.append(int(match.group(1)))
+
+    n_layers = max(layer_ids) + 1 if layer_ids else 0
+
+    if n_layers <= 0:
+        raise ValueError(
+            "Could not infer Transformer layer count from checkpoint."
+        )
+
+    # The existing Own AI architecture uses 8 attention heads.
+    n_heads = 8
+
+    if d_model % n_heads != 0:
+        raise ValueError(
+            f"Invalid architecture: d_model={d_model} is not divisible "
+            f"by n_heads={n_heads}."
+        )
+
     model = OwnAI(
-        vocab_size=checkpoint["vocab_size"],
-        block_size=checkpoint["block_size"],
-        d_model=checkpoint["d_model"],
-        n_heads=checkpoint["n_heads"],
-        n_layers=checkpoint["n_layers"],
+        vocab_size=vocab_size,
+        block_size=block_size,
+        d_model=d_model,
+        n_heads=n_heads,
+        n_layers=n_layers,
         dropout=checkpoint.get(
             "dropout",
             0.1,
@@ -402,13 +432,19 @@ def main():
     ).to(device)
 
     model.load_state_dict(
-        checkpoint["model_state"],
+        state,
         strict=True,
     )
 
     print(
         "Parameters:",
         f"{sum(p.numel() for p in model.parameters()):,}",
+    )
+
+    print(
+        "Architecture:",
+        f"d_model={d_model}, heads={n_heads}, "
+        f"layers={n_layers}, context={block_size}",
     )
 
     print(
@@ -508,11 +544,11 @@ def main():
                 torch.save(
                     {
                         "model_state": model.state_dict(),
-                        "vocab_size": checkpoint["vocab_size"],
-                        "block_size": checkpoint["block_size"],
-                        "d_model": checkpoint["d_model"],
-                        "n_heads": checkpoint["n_heads"],
-                        "n_layers": checkpoint["n_layers"],
+                        "vocab_size": vocab_size,
+                        "block_size": block_size,
+                        "d_model": d_model,
+                        "n_heads": n_heads,
+                        "n_layers": n_layers,
                         "dropout": checkpoint.get(
                             "dropout",
                             0.1,
