@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT))
 from tokenizer.tokenizer import OwnTokenizer
 from model.own_ai import OwnAI
 from rag.retriever import LocalRetriever
+from tools.tool_router import ToolRouter
 
 
 class OwnAIEngine:
@@ -119,6 +120,8 @@ class OwnAIEngine:
         )
 
         self.retriever.build()
+
+        self.tool_router = ToolRouter(ROOT)
 
         self.instruction_examples = self._load_instruction_examples()
 
@@ -295,8 +298,14 @@ class OwnAIEngine:
     def reset_memory(self):
         self.history.clear()
 
-    def _history_text(self, max_turns=3):
-        recent = self.history[
+    def _history_text(self, history=None, max_turns=3):
+        source = (
+            self.history
+            if history is None
+            else history
+        )
+
+        recent = source[
             -max_turns * 2:
         ]
 
@@ -309,10 +318,13 @@ class OwnAIEngine:
         self,
         user_text,
         use_rag,
+        history=None,
     ):
         sections = []
 
-        memory = self._history_text()
+        memory = self._history_text(
+            history=history
+        )
 
         if memory:
             sections.append(
@@ -359,6 +371,7 @@ class OwnAIEngine:
         self,
         user_text,
         use_rag=True,
+        history=None,
         max_new_tokens=120,
         temperature=0.72,
         top_k=40,
@@ -366,6 +379,24 @@ class OwnAIEngine:
         repetition_penalty=1.08,
     ):
         self.model.eval()
+
+        # Exact tools must run before sampled text generation.
+        tool_result = self.tool_router.route(
+            user_text
+        )
+
+        if tool_result is not None:
+            answer = tool_result["answer"]
+
+            if history is None:
+                self.history.append(
+                    ("User", user_text)
+                )
+                self.history.append(
+                    ("Assistant", answer)
+                )
+
+            return answer
 
         # First use high-confidence learned instruction pairs.
         # This prevents the tiny model from corrupting simple known answers.
@@ -398,6 +429,7 @@ class OwnAIEngine:
         prompt = self._build_prompt(
             user_text,
             use_rag,
+            history=history,
         )
 
         bos_id = (
@@ -545,13 +577,14 @@ class OwnAIEngine:
                 "answer yet."
             )
 
-        self.history.append(
-            ("User", user_text)
-        )
+        if history is None:
+            self.history.append(
+                ("User", user_text)
+            )
 
-        self.history.append(
-            ("Assistant", answer)
-        )
+            self.history.append(
+                ("Assistant", answer)
+            )
 
         return answer
 
