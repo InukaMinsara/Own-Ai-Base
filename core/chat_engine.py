@@ -1,5 +1,7 @@
 from pathlib import Path
+import re
 import sys
+from difflib import SequenceMatcher
 
 import torch
 
@@ -118,7 +120,118 @@ class OwnAIEngine:
 
         self.retriever.build()
 
+        self.instruction_examples = self._load_instruction_examples()
+
         self.history = []
+
+    def _load_instruction_examples(self):
+        path = (
+            ROOT
+            / "data"
+            / "processed"
+            / "instructions.txt"
+        )
+
+        if not path.exists():
+            return []
+
+        text = path.read_text(
+            encoding="utf-8"
+        )
+
+        examples = []
+
+        for chunk in text.split("<BOS>"):
+            chunk = chunk.strip()
+
+            if not chunk:
+                continue
+
+            chunk = chunk.split(
+                "<EOS>",
+                1
+            )[0].strip()
+
+            match = re.search(
+                r"User:s*(.*?)s*Assistant:s*(.*)",
+                chunk,
+                re.S,
+            )
+
+            if not match:
+                continue
+
+            question = match.group(1).strip()
+            answer = match.group(2).strip()
+
+            if question and answer:
+                examples.append(
+                    (question, answer)
+                )
+
+        return examples
+
+    @staticmethod
+    def _normalize_text(text):
+        return re.sub(
+            r"[^a-z0-9s]",
+            " ",
+            text.lower(),
+        ).split()
+
+    def _best_instruction_answer(self, user_text):
+        query = self._normalize_text(
+            user_text
+        )
+
+        if not query or not self.instruction_examples:
+            return None
+
+        query_text = " ".join(query)
+        best_answer = None
+        best_score = 0.0
+
+        for question, answer in self.instruction_examples:
+            candidate = self._normalize_text(
+                question
+            )
+
+            if not candidate:
+                continue
+
+            candidate_text = " ".join(
+                candidate
+            )
+
+            overlap = (
+                len(set(query) & set(candidate))
+                / max(
+                    1,
+                    len(set(query) | set(candidate))
+                )
+            )
+
+            sequence = SequenceMatcher(
+                None,
+                query_text,
+                candidate_text,
+            ).ratio()
+
+            score = (
+                0.65 * overlap
+                + 0.35 * sequence
+            )
+
+            if score > best_score:
+                best_score = score
+                best_answer = answer
+
+        # High-confidence instruction retrieval only.
+        # Unknown questions continue through the language model.
+        if best_score >= 0.68:
+            return best_answer
+
+        return None
 
     def reset_memory(self):
         self.history.clear()
@@ -194,6 +307,21 @@ class OwnAIEngine:
         repetition_penalty=1.08,
     ):
         self.model.eval()
+
+        # First use high-confidence learned instruction pairs.
+        # This prevents the tiny model from corrupting simple known answers.
+        retrieved_answer = self._best_instruction_answer(
+            user_text
+        )
+
+        if retrieved_answer is not None:
+            self.history.append(
+                ("User", user_text)
+            )
+            self.history.append(
+                ("Assistant", retrieved_answer)
+            )
+            return retrieved_answer
 
         prompt = self._build_prompt(
             user_text,
@@ -381,3 +509,4 @@ class OwnAIEngine:
                 len(self.retriever.documents)
             ),
         }
+
