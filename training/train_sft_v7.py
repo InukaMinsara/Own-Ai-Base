@@ -24,9 +24,8 @@ OUT_TOKENIZER = ROOT / "checkpoints" / "tokenizer_v7_sft.json"
 
 BLOCK_SIZE = int(os.getenv("OWN_AI_V7_CONTEXT", "512"))
 BATCH_SIZE = int(os.getenv("OWN_AI_V7_SFT_BATCH", "2"))
-MAX_STEPS = int(os.getenv("OWN_AI_V7_SFT_STEPS", "2500"))
+EPOCHS = int(os.getenv("OWN_AI_V7_SFT_EPOCHS", "5"))
 LR = float(os.getenv("OWN_AI_V7_SFT_LR", "0.00005"))
-EVAL_INTERVAL = 100
 PATIENCE = 5
 SEED = 42
 
@@ -333,7 +332,7 @@ def main():
     print("Context:", BLOCK_SIZE)
     print("=" * 60)
 
-    for step in range(MAX_STEPS):
+    for epoch in range(EPOCHS):
         model.train()
         random.shuffle(train_encoded)
 
@@ -390,28 +389,24 @@ def main():
                 loss.item()
             )
 
-        if (
-            step % EVAL_INTERVAL == 0
-            or step == MAX_STEPS - 1
-        ):
-            val = evaluate(
+        val = evaluate(
                 model,
                 val_encoded,
                 tokenizer,
                 device,
             )
 
-            print(
-                f"Step {step:04d} | "
-                f"Train: {sum(running)/max(1,len(running)):.4f} | "
-                f"Val: {val:.4f}"
-            )
+        print(
+            f"Epoch {epoch + 1:02d}/{EPOCHS} | "
+            f"Train: {sum(running)/max(1,len(running)):.4f} | "
+            f"Val: {val:.4f}"
+        )
 
-            if val < best:
-                best = val
-                bad = 0
+        if val < best:
+            best = val
+            bad = 0
 
-                torch.save(
+            torch.save(
                     {
                         "model_state": model.state_dict(),
                         "vocab_size": checkpoint["vocab_size"],
@@ -431,13 +426,13 @@ def main():
                     OUT_TOKENIZER
                 )
 
-                print("  Saved best v7 SFT checkpoint.")
-            else:
-                bad += 1
+            print("  Saved best v7 SFT checkpoint.")
+        else:
+            bad += 1
 
-                if bad >= PATIENCE:
-                    print("  Early stopping.")
-                    break
+            if bad >= PATIENCE:
+                print("  Early stopping.")
+                break
 
     print("=" * 60)
     print("v7 SFT FINISHED")
