@@ -171,7 +171,7 @@ CODING_SEEDS = [
     ),
     (
         "How do I create an HTML button?",
-        "Use a button element such as <button type="button">Click me</button> and add JavaScript only when the button needs behavior."
+        'Use a button element such as <button type="button">Click me</button> and add JavaScript only when the button needs behavior.'
     ),
     (
         "How do I center an element with CSS?",
