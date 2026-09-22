@@ -1,4 +1,7 @@
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.server import (
+    BaseHTTPRequestHandler,
+    ThreadingHTTPServer,
+)
 import json
 from pathlib import Path
 import sys
@@ -97,8 +100,15 @@ const sendBtn=document.getElementById('send');
 const infoEl=document.getElementById('info');
 
 function escapeHtml(s){
-  return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return s.replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
 }
+
 function add(role,text){
   const box=document.createElement('div');
   box.className='msg '+(role==='You'?'user':'ai');
@@ -106,12 +116,14 @@ function add(role,text){
   chat.appendChild(box);
   chat.scrollTop=chat.scrollHeight;
 }
+
 function key(e){
   if(e.key==='Enter'&&!e.shiftKey){
     e.preventDefault();
     send();
   }
 }
+
 async function send(){
   const text=input.value.trim();
   if(!text)return;
@@ -144,22 +156,26 @@ async function send(){
     input.focus();
   }
 }
+
 async function newChat(){
   await fetch('/api/reset',{method:'POST'});
   chat.innerHTML='';
   add('Own AI','New conversation started.');
 }
+
 async function showInfo(){
   const r=await fetch('/api/info');
   const d=await r.json();
   alert(JSON.stringify(d,null,2));
 }
-fetch('/api/info').then(r=>r.json()).then(d=>{
-  infoEl.textContent=
-    d.stage+' · '+Number(d.parameters).toLocaleString()+' params
-'+
-    d.layers+' layers · '+d.retrieval_documents+' local chunks';
-});
+
+fetch('/api/info')
+  .then(r=>r.json())
+  .then(d=>{
+    infoEl.textContent=
+      d.stage+' · '+Number(d.parameters).toLocaleString()+'\n'+
+      d.layers+' layers · '+d.retrieval_documents+' local chunks';
+  });
 </script>
 </body>
 </html>"""
@@ -169,19 +185,40 @@ engine = OwnAIEngine()
 
 
 class Handler(BaseHTTPRequestHandler):
-    def _send(self, status, body, content_type="application/json; charset=utf-8"):
+    def _send(
+        self,
+        status,
+        body,
+        content_type=(
+            "application/json; charset=utf-8"
+        ),
+    ):
         data = body.encode("utf-8")
 
         self.send_response(status)
-        self.send_header("Content-Type", content_type)
-        self.send_header("Content-Length", str(len(data)))
-        self.send_header("Cache-Control", "no-store")
-        self.end_headers()
 
+        self.send_header(
+            "Content-Type",
+            content_type,
+        )
+
+        self.send_header(
+            "Content-Length",
+            str(len(data)),
+        )
+
+        self.send_header(
+            "Cache-Control",
+            "no-store",
+        )
+
+        self.end_headers()
         self.wfile.write(data)
 
     def do_GET(self):
-        path = urlparse(self.path).path
+        path = urlparse(
+            self.path
+        ).path
 
         if path == "/":
             self._send(
@@ -194,17 +231,23 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/info":
             self._send(
                 200,
-                json.dumps(engine.info()),
+                json.dumps(
+                    engine.info()
+                ),
             )
             return
 
         self._send(
             404,
-            json.dumps({"error": "Not found"}),
+            json.dumps(
+                {"error": "Not found"}
+            ),
         )
 
     def do_POST(self):
-        path = urlparse(self.path).path
+        path = urlparse(
+            self.path
+        ).path
 
         try:
             length = int(
@@ -213,14 +256,22 @@ class Handler(BaseHTTPRequestHandler):
                     "0",
                 )
             )
+
             raw = self.rfile.read(length)
+
             payload = json.loads(
                 raw.decode("utf-8")
             )
-        except (ValueError, json.JSONDecodeError):
+
+        except (
+            ValueError,
+            json.JSONDecodeError,
+        ):
             self._send(
                 400,
-                json.dumps({"error": "Invalid request"}),
+                json.dumps(
+                    {"error": "Invalid request"}
+                ),
             )
             return
 
@@ -229,7 +280,9 @@ class Handler(BaseHTTPRequestHandler):
 
             self._send(
                 200,
-                json.dumps({"ok": True}),
+                json.dumps(
+                    {"ok": True}
+                ),
             )
             return
 
@@ -252,7 +305,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(
                     400,
                     json.dumps(
-                        {"error": "Message is empty"}
+                        {
+                            "error":
+                                "Message is empty"
+                        }
                     ),
                 )
                 return
@@ -270,11 +326,15 @@ class Handler(BaseHTTPRequestHandler):
                         ensure_ascii=False,
                     ),
                 )
+
             except Exception as exc:
                 self._send(
                     500,
                     json.dumps(
-                        {"error": str(exc)}
+                        {
+                            "error":
+                                str(exc)
+                        }
                     ),
                 )
 
@@ -282,7 +342,9 @@ class Handler(BaseHTTPRequestHandler):
 
         self._send(
             404,
-            json.dumps({"error": "Not found"}),
+            json.dumps(
+                {"error": "Not found"}
+            ),
         )
 
 
@@ -292,8 +354,12 @@ def main():
     print("=" * 56)
     print("Stage:", engine.stage)
     print("Device:", engine.device)
-    print("URL: http://127.0.0.1:8000")
-    print("Press Ctrl+C to stop.")
+    print(
+        "URL: http://127.0.0.1:8000"
+    )
+    print(
+        "Press Ctrl+C to stop."
+    )
     print("=" * 56)
 
     server = ThreadingHTTPServer(
@@ -303,9 +369,12 @@ def main():
 
     try:
         server.serve_forever()
+
     except KeyboardInterrupt:
-        print("
-Stopping Own AI…")
+        print(
+            "\nStopping Own AI…"
+        )
+
     finally:
         server.server_close()
 
