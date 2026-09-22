@@ -17,14 +17,18 @@ echo          OWN AI v8 FULL PIPELINE
 echo ==============================================
 echo.
 echo 1. Build balanced dataset
-echo 2. Pretrain v8
-echo 3. Instruction SFT
+echo 2. Build token shards
+echo 3. Streaming pretrain v8
+echo 4. Instruction SFT
 echo.
 
 python data\build_v8_dataset.py
 if errorlevel 1 goto :error
 
-python training\train_v8.py
+python data\build_token_shards_v8.py
+if errorlevel 1 goto :error
+
+python training\train_v8_streaming.py
 if errorlevel 1 goto :error
 
 python training\train_sft_v8.py
