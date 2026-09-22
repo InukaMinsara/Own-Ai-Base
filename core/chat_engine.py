@@ -179,6 +179,65 @@ class OwnAIEngine:
             text.lower(),
         ).split()
 
+    def _best_knowledge_answer(self, user_text):
+        """
+        Extract a concise answer from a strong local-knowledge match.
+        This gives the small model a graceful fallback instead of gibberish.
+        """
+        results = self.retriever.search(
+            user_text,
+            top_k=5,
+            min_score=1.0,
+        )
+
+        query_words = set(
+            self._normalize_text(user_text)
+        )
+
+        if len(query_words) < 2:
+            return None
+
+        best = None
+        best_score = 0.0
+
+        for item in results:
+            sentences = re.split(
+                r"(?<=[.!?])\s+",
+                item["text"].replace("\n", " ").strip(),
+            )
+
+            for sentence in sentences:
+                sentence = sentence.strip()
+
+                if len(sentence) < 35:
+                    continue
+
+                words = set(
+                    self._normalize_text(sentence)
+                )
+
+                overlap = (
+                    len(query_words & words)
+                    / max(1, len(query_words))
+                )
+
+                score = (
+                    0.65 * overlap
+                    + 0.35 * min(
+                        item["score"] / 8.0,
+                        1.0,
+                    )
+                )
+
+                if score > best_score:
+                    best_score = score
+                    best = sentence
+
+        if best_score >= 0.38:
+            return best
+
+        return None
+
     def _best_instruction_answer(self, user_text):
         query = self._normalize_text(
             user_text
@@ -322,6 +381,19 @@ class OwnAIEngine:
                 ("Assistant", retrieved_answer)
             )
             return retrieved_answer
+
+        knowledge_answer = self._best_knowledge_answer(
+            user_text
+        )
+
+        if knowledge_answer is not None:
+            self.history.append(
+                ("User", user_text)
+            )
+            self.history.append(
+                ("Assistant", knowledge_answer)
+            )
+            return knowledge_answer
 
         prompt = self._build_prompt(
             user_text,
