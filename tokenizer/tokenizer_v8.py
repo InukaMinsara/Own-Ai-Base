@@ -5,11 +5,11 @@ from pathlib import Path
 
 
 class OwnTokenizerV8:
-    """Hybrid word/Unicode tokenizer with guaranteed character fallback.
+    """Hybrid word/Unicode tokenizer with character fallback.
 
-    Frequent complete pieces (words/code chunks) become single tokens, while
-    every Unicode character seen during training remains available as a
-    fallback. This avoids the aggressive UNK behavior of the old tokenizer.
+    Common whole pieces (words/code chunks) get compact tokens while the
+    training corpus' unique Unicode characters are explicitly reserved.
+    This keeps Sinhala and other scripts from becoming UNK-heavy.
     """
 
     SPECIAL = ["<PAD>", "<UNK>", "<BOS>", "<EOS>"]
@@ -31,30 +31,19 @@ class OwnTokenizerV8:
 
         for piece in self._pieces(text):
             piece_freq[piece] += 1
+
             if piece.isspace():
                 whitespace_freq[piece] += 1
                 continue
+
             for ch in piece:
                 char_freq[ch] += 1
 
         vocab = list(self.SPECIAL)
         used = set(vocab)
 
-        # Keep common complete pieces first. This is especially useful for
-        # English words, URLs, common code fragments, and Sinhala words.
-        ranked_pieces = sorted(
-            piece_freq.items(),
-            key=lambda item: (-item[1], -len(item[0]), item[0]),
-        )
-
-        for piece, _freq in ranked_pieces:
-            if len(vocab) >= self.target_vocab_size:
-                break
-            if piece not in used:
-                vocab.append(piece)
-                used.add(piece)
-
-        # Always reserve space for character fallback.
+        # Character coverage is a hard priority. If the corpus has fewer
+        # characters than the target vocabulary, all of them are preserved.
         ranked_chars = sorted(
             char_freq.items(),
             key=lambda item: (-item[1], item[0]),
@@ -67,7 +56,22 @@ class OwnTokenizerV8:
                 vocab.append(ch)
                 used.add(ch)
 
-        # Add common whitespace forms if capacity remains.
+        # Then add common whole pieces until the vocabulary is full.
+        ranked_pieces = sorted(
+            piece_freq.items(),
+            key=lambda item: (-item[1], -len(item[0]), item[0]),
+        )
+
+        for piece, _freq in ranked_pieces:
+            if len(vocab) >= self.target_vocab_size:
+                break
+            if piece not in used:
+                vocab.append(piece)
+                used.add(piece)
+
+        # Preserve frequently occurring whitespace runs only when capacity
+        # remains; single spaces/newlines are normally already present in
+        # the character set.
         for ws, _freq in sorted(
             whitespace_freq.items(),
             key=lambda item: (-item[1], -len(item[0])),
@@ -78,27 +82,36 @@ class OwnTokenizerV8:
                 vocab.append(ws)
                 used.add(ws)
 
-        # If the target vocab is too small to include every character, this is
-        # still a valid tokenizer, but unseen characters can fall back to UNK.
-        self.token_to_id = {token: i for i, token in enumerate(vocab)}
+        self.token_to_id = {
+            token: i
+            for i, token in enumerate(vocab)
+        }
         self.id_to_token = {
-            i: token for token, i in self.token_to_id.items()
+            i: token
+            for token, i in self.token_to_id.items()
         }
         self.max_piece_len = max(
-            [len(token) for token in self.token_to_id if token not in self.SPECIAL]
+            [len(token) for token in self.token_to_id]
             or [1]
         )
 
     def _encode_nonspace(self, piece):
         ids = []
         i = 0
+
         while i < len(piece):
             best = None
+
             upper = min(
                 len(piece),
                 i + self.max_piece_len,
             )
-            for end in range(upper, i, -1):
+
+            for end in range(
+                upper,
+                i,
+                -1,
+            ):
                 candidate = piece[i:end]
                 if candidate in self.token_to_id:
                     best = candidate
@@ -113,26 +126,31 @@ class OwnTokenizerV8:
                     )
                 )
                 i += 1
-            else:
-                ids.append(self.token_to_id[best])
-                i += len(best)
+                continue
+
+            ids.append(
+                self.token_to_id[best]
+            )
+            i += len(best)
 
         return ids
 
     def encode(self, text, add_special_tokens=False):
         ids = []
+
         if add_special_tokens:
             ids.append(self.bos_id)
 
         for piece in self._pieces(text):
             if piece.isspace():
-                token_id = self.token_to_id.get(piece)
+                token_id = self.token_to_id.get(
+                    piece
+                )
+
                 if token_id is not None:
                     ids.append(token_id)
                     continue
 
-                # Preserve unknown whitespace exactly through known single
-                # whitespace characters when possible.
                 for ch in piece:
                     ids.append(
                         self.token_to_id.get(
@@ -140,8 +158,11 @@ class OwnTokenizerV8:
                             self.token_to_id["<UNK>"],
                         )
                     )
-            else:
-                ids.extend(self._encode_nonspace(piece))
+                continue
+
+            ids.extend(
+                self._encode_nonspace(piece)
+            )
 
         if add_special_tokens:
             ids.append(self.eos_id)
@@ -150,6 +171,7 @@ class OwnTokenizerV8:
 
     def decode(self, ids):
         special = set(self.SPECIAL)
+
         return "".join(
             self.id_to_token.get(
                 int(i),
@@ -187,8 +209,9 @@ class OwnTokenizerV8:
                 for k, v in self.id_to_token.items()
             },
             "max_piece_len": self.max_piece_len,
-            "tokenizer_version": "v8-hybrid",
+            "tokenizer_version": "v8-hybrid-char-first",
         }
+
         Path(path).write_text(
             json.dumps(
                 data,
@@ -204,15 +227,25 @@ class OwnTokenizerV8:
                 encoding="utf-8"
             )
         )
-        self.target_vocab_size = data.get(
-            "target_vocab_size",
-            4096,
+
+        self.target_vocab_size = int(
+            data.get(
+                "target_vocab_size",
+                4096,
+            )
         )
-        self.token_to_id = data["token_to_id"]
+        self.token_to_id = data[
+            "token_to_id"
+        ]
         self.id_to_token = {
             int(k): v
-            for k, v in data["id_to_token"].items()
+            for k, v in data[
+                "id_to_token"
+            ].items()
         }
         self.max_piece_len = int(
-            data.get("max_piece_len", 1)
+            data.get(
+                "max_piece_len",
+                1,
+            )
         )
