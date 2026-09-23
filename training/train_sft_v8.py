@@ -32,6 +32,8 @@ BLOCK_SIZE = int(os.getenv("OWN_AI_V8_CONTEXT", "1024"))
 BATCH_SIZE = int(os.getenv("OWN_AI_V8_SFT_BATCH", "1"))
 ACCUM = int(os.getenv("OWN_AI_V8_SFT_ACCUM", "8"))
 EPOCHS = int(os.getenv("OWN_AI_V8_SFT_EPOCHS", "3"))
+MAX_BATCHES = int(os.getenv("OWN_AI_V8_SFT_MAX_BATCHES", "0"))
+LOG_EVERY = int(os.getenv("OWN_AI_V8_SFT_LOG_EVERY", "100"))
 LR = float(os.getenv("OWN_AI_V8_SFT_LR", "0.00005"))
 USE_CHECKPOINTING = True
 SEED = 42
@@ -350,10 +352,19 @@ def main():
         optimizer.zero_grad(
             set_to_none=True
         )
+        batch_count = 0
+        effective_rows = (
+            len(train_rows)
+            if MAX_BATCHES <= 0
+            else min(
+                len(train_rows),
+                MAX_BATCHES * BATCH_SIZE,
+            )
+        )
 
         for index in range(
             0,
-            len(train_rows),
+            effective_rows,
             BATCH_SIZE,
         ):
             batch_rows = train_rows[
@@ -394,10 +405,18 @@ def main():
             ).backward()
 
             running += loss.item()
+            batch_count += 1
+
+            if LOG_EVERY > 0 and batch_count % LOG_EVERY == 0:
+                print(
+                    f"Epoch {epoch + 1:02d}/{EPOCHS} | "
+                    f"Batch {batch_count}/{max(1, (effective_rows + BATCH_SIZE - 1) // BATCH_SIZE)} | "
+                    f"Loss: {loss.item():.4f}"
+                )
 
             should_step = (
                 ((index // BATCH_SIZE) + 1) % ACCUM == 0
-                or index + BATCH_SIZE >= len(train_rows)
+                or index + BATCH_SIZE >= effective_rows
             )
 
             if should_step:
@@ -421,7 +440,7 @@ def main():
 
         train_avg = running / max(
             1,
-            (len(train_rows) + BATCH_SIZE - 1) // BATCH_SIZE,
+            max(1, (effective_rows + BATCH_SIZE - 1) // BATCH_SIZE),
         )
 
         print(
@@ -458,6 +477,7 @@ def main():
     print("=" * 64)
     print("v8 SFT FINISHED")
     print("Best validation loss:", f"{best:.4f}")
+    print("Max batches:", MAX_BATCHES if MAX_BATCHES > 0 else "all")
     print("Model:", OUT_MODEL)
     print("=" * 64)
 
