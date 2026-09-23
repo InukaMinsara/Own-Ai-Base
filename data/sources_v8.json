@@ -1,0 +1,51 @@
+{
+  "version": "v8-phase2-sources-1",
+  "notes": [
+    "Only sources with explicit reuse terms are placed in the approved list.",
+    "Keep the source license and attribution metadata next to every downloaded collection.",
+    "Do not add a source merely because a webpage is publicly readable."
+  ],
+  "approved": {
+    "siwiki": {
+      "name": "Wikimedia Sinhala Wikipedia current articles dump",
+      "url": "https://dumps.wikimedia.org/siwiki/latest/siwiki-latest-pages-articles-multistream.xml.bz2",
+      "license": "CC BY-SA",
+      "license_url": "https://meta.wikimedia.org/wiki/Terms_of_Use",
+      "category": "sinhala",
+      "format": "wikimedia_xml_bz2",
+      "target_dir": "open_license/wikimedia/siwiki"
+    },
+    "enwiki": {
+      "name": "Wikimedia English Wikipedia current articles dump",
+      "url": "https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles-multistream.xml.bz2",
+      "license": "CC BY-SA",
+      "license_url": "https://meta.wikimedia.org/wiki/Terms_of_Use",
+      "category": "knowledge",
+      "format": "wikimedia_xml_bz2",
+      "target_dir": "open_license/wikimedia/enwiki"
+    },
+    "enwiktionary": {
+      "name": "Wikimedia English Wiktionary current articles dump",
+      "url": "https://dumps.wikimedia.org/enwiktionary/latest/enwiktionary-latest-pages-articles-multistream.xml.bz2",
+      "license": "CC BY-SA",
+      "license_url": "https://meta.wikimedia.org/wiki/Terms_of_Use",
+      "category": "language",
+      "format": "wikimedia_xml_bz2",
+      "target_dir": "open_license/wikimedia/enwiktionary"
+    }
+  },
+  "review_required": {
+    "commoncrawl": {
+      "name": "Common Crawl",
+      "reason": "The crawl contains third-party material subject to the original publishers' terms. Do not treat Common Crawl as a blanket license for all pages."
+    },
+    "openstax_selected_titles": {
+      "name": "OpenStax selected textbooks",
+      "reason": "Licenses vary by title and some current OpenStax titles explicitly prohibit LLM training. Each title must be checked individually before ingestion."
+    },
+    "project_gutenberg": {
+      "name": "Project Gutenberg",
+      "reason": "U.S. public-domain status does not automatically establish the same rights in every country. Verify the applicable rights before ingesting or redistributing."
+    }
+  }
+}
