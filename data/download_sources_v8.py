@@ -10,10 +10,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "data" / "sources_v8.json"
 
-DEFAULT_ROOT = Path(
+REQUESTED_ROOT = Path(
     os.getenv(
         "OWN_AI_V8_DATA_ROOT",
         r"E:\My Drive [Inuka Minsara]\OwnAI_Dataset",
+    )
+).resolve()
+
+FALLBACK_ROOT = Path(
+    os.getenv(
+        "OWN_AI_V8_DOWNLOAD_FALLBACK",
+        str(ROOT / "data" / "cache" / "phase2_sources"),
     )
 ).resolve()
 
@@ -78,6 +85,39 @@ def download(url: str, destination: Path):
     part.replace(destination)
 
 
+def choose_root(requested: Path) -> Path:
+    # Air Live Drive can expose a read-only mount. Probe the target directory
+    # before attempting a large download and fall back to local staging.
+    probe_dir = requested / "_phase2_write_probe"
+    try:
+        probe_dir.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+        probe_file = probe_dir / "probe.tmp"
+        probe_file.write_text(
+            "ok",
+            encoding="utf-8",
+        )
+        probe_file.unlink()
+        probe_dir.rmdir()
+        return requested
+    except (OSError, PermissionError):
+        FALLBACK_ROOT.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+        print(
+            "WARNING: Dataset root is not writable:",
+            requested,
+        )
+        print(
+            "Using local staging root:",
+            FALLBACK_ROOT,
+        )
+        return FALLBACK_ROOT
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Download approved Own AI Phase 2 sources."
@@ -92,11 +132,12 @@ def main():
     args = parser.parse_args()
 
     catalog = load_catalog()["approved"]
+    download_root = choose_root(REQUESTED_ROOT)
 
     for source_id in args.sources:
         item = catalog[source_id]
         target = (
-            DEFAULT_ROOT
+            download_root
             / item["target_dir"]
             / Path(item["url"]).name
         )
@@ -110,6 +151,8 @@ def main():
                 {
                     "source_id": source_id,
                     **item,
+                    "requested_root": str(REQUESTED_ROOT),
+                    "download_root": str(download_root),
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -121,6 +164,8 @@ def main():
         print("Downloading:", item["name"])
         print("License:", item["license"])
         print("Destination:", target)
+        if download_root != REQUESTED_ROOT:
+            print("Original cloud path:", REQUESTED_ROOT / item["target_dir"] / Path(item["url"]).name)
         print("=" * 68)
 
         download(
