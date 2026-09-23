@@ -187,11 +187,19 @@ def extract(source, output_dir, max_chars):
     if output:
         output.close()
 
+    source_hash = hashlib.sha256()
+    with source.open("rb") as source_handle:
+        while True:
+            block = source_handle.read(
+                1024 * 1024
+            )
+            if not block:
+                break
+            source_hash.update(block)
+
     metadata = {
         "source_file": str(source),
-        "source_sha256": hashlib.sha256(
-            source.read_bytes()
-        ).hexdigest(),
+        "source_sha256": source_hash.hexdigest(),
         "articles": article_count,
         "parts": part_index,
         "max_chars": max_chars,
