@@ -85,22 +85,21 @@ def download(url: str, destination: Path):
     part.replace(destination)
 
 
-def choose_root(requested: Path) -> Path:
-    # Air Live Drive can expose a read-only mount. Probe the target directory
-    # before attempting a large download and fall back to local staging.
-    probe_dir = requested / "_phase2_write_probe"
+def choose_root(requested: Path, target_dir: Path) -> Path:
+    # Air Live Drive may expose the mount while denying writes inside a
+    # particular subdirectory. Probe the exact destination before writing
+    # metadata or starting a potentially large download.
     try:
-        probe_dir.mkdir(
+        target_dir.mkdir(
             parents=True,
             exist_ok=True,
         )
-        probe_file = probe_dir / "probe.tmp"
-        probe_file.write_text(
+        probe = target_dir / ".ownai_write_probe"
+        probe.write_text(
             "ok",
             encoding="utf-8",
         )
-        probe_file.unlink()
-        probe_dir.rmdir()
+        probe.unlink()
         return requested
     except (OSError, PermissionError):
         FALLBACK_ROOT.mkdir(
@@ -108,8 +107,8 @@ def choose_root(requested: Path) -> Path:
             exist_ok=True,
         )
         print(
-            "WARNING: Dataset root is not writable:",
-            requested,
+            "WARNING: Destination is not writable:",
+            target_dir,
         )
         print(
             "Using local staging root:",
@@ -132,10 +131,19 @@ def main():
     args = parser.parse_args()
 
     catalog = load_catalog()["approved"]
-    download_root = choose_root(REQUESTED_ROOT)
 
     for source_id in args.sources:
         item = catalog[source_id]
+
+        requested_dir = (
+            REQUESTED_ROOT
+            / item["target_dir"]
+        )
+        download_root = choose_root(
+            REQUESTED_ROOT,
+            requested_dir,
+        )
+
         target = (
             download_root
             / item["target_dir"]
@@ -146,6 +154,7 @@ def main():
             target.parent
             / "SOURCE_METADATA.json"
         )
+
         license_file.write_text(
             json.dumps(
                 {
