@@ -19,6 +19,7 @@ from tokenizer.tokenizer_v8 import OwnTokenizerV8
 
 
 OUT_ROOT = ROOT / "data" / "processed" / "token_shards_v8"
+CLEAN_MANIFEST = ROOT / "data" / "processed" / "corpus_v8" / "clean_manifest_v8.jsonl"
 
 VOCAB_SIZE = int(os.getenv("OWN_AI_V8_VOCAB", "4096"))
 SHARD_MB = int(os.getenv("OWN_AI_V8_SHARD_MB", "128"))
@@ -68,6 +69,45 @@ def data_roots():
         ROOT / "data" / "raw",
         ROOT / "data" / "knowledge",
     ]
+
+
+def iter_clean_manifest_files():
+    if not CLEAN_MANIFEST.exists():
+        return []
+
+    files = []
+    seen = set()
+
+    with CLEAN_MANIFEST.open(
+        "r",
+        encoding="utf-8",
+    ) as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            if record.get("status") != "accepted":
+                continue
+
+            path = Path(record["path"])
+            key = str(path.resolve()).lower()
+
+            if key in seen or not path.is_file():
+                continue
+
+            if path.suffix.lower() not in ALLOWED:
+                continue
+
+            seen.add(key)
+            files.append(path)
+
+    return files
 
 
 def iter_files(roots):
@@ -305,17 +345,21 @@ def reset_output():
 
 
 def main():
-    roots = data_roots()
+    files = iter_clean_manifest_files()
+    source_mode = "clean_manifest"
 
-    files = list(
-        iter_files(roots)
-    )
+    if not files:
+        roots = data_roots()
+        files = list(
+            iter_files(roots)
+        )
+        source_mode = "fallback_roots"
 
     if not files:
         raise ValueError(
-            "No dataset files found. Put training data in "
-            "data\\cache, data\\raw, or data\\knowledge, "
-            "or set OWN_AI_V8_DATA_DIRS."
+            "No accepted corpus files found. Run "
+            "phase2_build_corpus.bat first, or set "
+            "OWN_AI_V8_DATA_DIRS for the fallback mode."
         )
 
     tokenizer, sample_bytes = build_tokenizer(
@@ -461,6 +505,8 @@ def main():
             )
 
     summary = {
+        "source_mode": source_mode,
+        "clean_manifest": str(CLEAN_MANIFEST),
         "files": len(files),
         "unique_chunks": len(
             seen_chunks
@@ -485,6 +531,7 @@ def main():
     print("=" * 68)
     print("OWN AI v8 TOKEN SHARD BUILDER")
     print("=" * 68)
+    print("Source mode:", source_mode)
     print("Files:", len(files))
     print("Unique chunks:", len(seen_chunks))
     print(
