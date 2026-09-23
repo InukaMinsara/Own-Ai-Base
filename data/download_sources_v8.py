@@ -150,6 +150,13 @@ def main():
             / Path(item["url"]).name
         )
 
+        # The fallback root itself may exist while the nested source directory
+        # does not. Create the final target directory before writing metadata.
+        target.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
         license_file = (
             target.parent
             / "SOURCE_METADATA.json"
