@@ -165,14 +165,19 @@ def analyze_text(path, min_chars):
 
 
 def split_for_hash(value, ordinal, total):
-    # Small manifests get deterministic train/val/test coverage.
-    if total <= 3:
+    # Guarantee non-empty train/val/test for any dataset with >= 3 items.
+    # After the first three items, use the deterministic 90/5/5 hash split.
+    if total >= 3:
         if ordinal == 1:
             return "train"
         if ordinal == 2:
             return "val"
         if ordinal == 3:
             return "test"
+    elif total == 2:
+        return "train" if ordinal == 1 else "val"
+    else:
+        return "train"
 
     bucket = int(value[:8], 16) % 100
     if bucket < 90:
