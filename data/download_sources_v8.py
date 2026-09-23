@@ -1,0 +1,135 @@
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import shutil
+import urllib.request
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+CATALOG = ROOT / "data" / "sources_v8.json"
+
+DEFAULT_ROOT = Path(
+    os.getenv(
+        "OWN_AI_V8_DATA_ROOT",
+        r"E:\My Drive [Inuka Minsara]\OwnAI_Dataset",
+    )
+).resolve()
+
+
+def load_catalog():
+    return json.loads(
+        CATALOG.read_text(
+            encoding="utf-8"
+        )
+    )
+
+
+def download(url: str, destination: Path):
+    destination.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    part = destination.with_suffix(
+        destination.suffix + ".part"
+    )
+
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "OwnAI-Phase2-DataFetcher/1.0"
+        },
+    )
+
+    existing = part.stat().st_size if part.exists() else 0
+
+    if existing:
+        request.add_header(
+            "Range",
+            f"bytes={existing}-",
+        )
+
+    try:
+        with urllib.request.urlopen(
+            request,
+            timeout=60,
+        ) as response:
+            mode = "ab" if existing else "wb"
+
+            if existing and response.status != 206:
+                mode = "wb"
+                existing = 0
+
+            with part.open(mode) as handle:
+                shutil.copyfileobj(
+                    response,
+                    handle,
+                    length=1024 * 1024,
+                )
+    except Exception:
+        print(
+            "Download interrupted. Partial file kept:",
+            part,
+        )
+        raise
+
+    part.replace(destination)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Download approved Own AI Phase 2 sources."
+    )
+    parser.add_argument(
+        "sources",
+        nargs="+",
+        choices=sorted(
+            load_catalog()["approved"]
+        ),
+    )
+    args = parser.parse_args()
+
+    catalog = load_catalog()["approved"]
+
+    for source_id in args.sources:
+        item = catalog[source_id]
+        target = (
+            DEFAULT_ROOT
+            / item["target_dir"]
+            / Path(item["url"]).name
+        )
+
+        license_file = (
+            target.parent
+            / "SOURCE_METADATA.json"
+        )
+        license_file.write_text(
+            json.dumps(
+                {
+                    "source_id": source_id,
+                    **item,
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+
+        print("=" * 68)
+        print("Downloading:", item["name"])
+        print("License:", item["license"])
+        print("Destination:", target)
+        print("=" * 68)
+
+        download(
+            item["url"],
+            target,
+        )
+
+        print("Completed:", target)
+
+
+if __name__ == "__main__":
+    main()
