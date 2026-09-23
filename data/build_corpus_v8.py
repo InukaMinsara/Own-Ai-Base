@@ -11,12 +11,31 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-LAKE_ROOT = Path(
+
+REQUESTED_DATA_ROOT = Path(
     os.getenv(
         "OWN_AI_V8_DATA_ROOT",
         r"E:\My Drive [Inuka Minsara]\OwnAI_Dataset",
     )
 ).resolve()
+
+FALLBACK_DATA_ROOT = Path(
+    os.getenv(
+        "OWN_AI_V8_DOWNLOAD_FALLBACK",
+        str(ROOT / "data" / "cache" / "phase2_sources"),
+    )
+).resolve()
+
+# Phase 2 may stage source downloads locally when the Air Live Drive
+# destination is read-only. Scan both roots and let the same dedup pipeline
+# remove duplicates if the same source later appears in both locations.
+DATA_ROOTS = []
+for candidate in (REQUESTED_DATA_ROOT, FALLBACK_DATA_ROOT):
+    if candidate not in DATA_ROOTS and candidate.exists():
+        DATA_ROOTS.append(candidate)
+
+if not DATA_ROOTS:
+    DATA_ROOTS = [REQUESTED_DATA_ROOT]
 
 OUT_ROOT = ROOT / "data" / "processed" / "corpus_v8"
 MANIFEST = OUT_ROOT / "clean_manifest_v8.jsonl"
@@ -68,34 +87,44 @@ MINHASH_WORDS = int(
 
 
 def iter_files():
-    if not LAKE_ROOT.exists():
-        raise FileNotFoundError(
-            f"Dataset root not found: {LAKE_ROOT}"
-        )
+    yielded = set()
 
-    for path in sorted(
-        LAKE_ROOT.rglob("*"),
-        key=lambda p: str(p).lower(),
-    ):
-        if not path.is_file():
+    for data_root in DATA_ROOTS:
+        if not data_root.exists():
             continue
-        if path.suffix.lower() not in ALLOWED:
-            continue
-        if any(
-            part.lower() in SKIP_DIRS
-            for part in path.parts
+
+        for path in sorted(
+            data_root.rglob("*"),
+            key=lambda p: str(p).lower(),
         ):
-            continue
-        try:
-            stat = path.stat()
-        except OSError:
-            continue
-        yield path, stat
+            if not path.is_file():
+                continue
+            if path.name in SKIP_FILES:
+                continue
+            if path.suffix.lower() not in ALLOWED:
+                continue
+            if any(
+                part.lower() in SKIP_DIRS
+                for part in path.parts
+            ):
+                continue
+
+            try:
+                stat = path.stat()
+            except OSError:
+                continue
+
+            resolved = str(path.resolve()).lower()
+            if resolved in yielded:
+                continue
+            yielded.add(resolved)
+
+            yield data_root, path, stat
 
 
-def category_for(path):
+def category_for(path, data_root):
     try:
-        relative = path.relative_to(LAKE_ROOT)
+        relative = path.relative_to(data_root)
         if relative.parts:
             return relative.parts[0].lower()
     except ValueError:
@@ -103,8 +132,8 @@ def category_for(path):
     return "uncategorized"
 
 
-def source_type_for(path):
-    category = category_for(path)
+def source_type_for(path, data_root):
+    category = category_for(path, data_root)
     if category in {
         "open_license", "open", "public_domain",
     }:
@@ -112,8 +141,8 @@ def source_type_for(path):
     return "user_supplied"
 
 
-def license_status_for(path):
-    source_type = source_type_for(path)
+def license_status_for(path, data_root):
+    source_type = source_type_for(path, data_root)
     if source_type == "user_supplied":
         return "user_supplied"
     if source_type == "open_license":
@@ -603,7 +632,7 @@ def main():
     )
 
     try:
-        for index, (path, stat) in enumerate(
+        for index, (data_root, path, stat) in enumerate(
             iter_files(),
             1,
         ):
@@ -611,16 +640,26 @@ def main():
 
             source = {
                 "path": str(path),
+                "data_root": str(data_root),
                 "relative_path": str(
                     path.relative_to(
-                        LAKE_ROOT
+                        data_root
                     )
                 ),
-                "category": category_for(path),
+                "category": category_for(
+                    path,
+                    data_root,
+                ),
                 "extension": path.suffix.lower(),
                 "bytes": stat.st_size,
-                "source_type": source_type_for(path),
-                "license_status": license_status_for(path),
+                "source_type": source_type_for(
+                    path,
+                    data_root,
+                ),
+                "license_status": license_status_for(
+                    path,
+                    data_root,
+                ),
             }
 
             try:
@@ -796,7 +835,7 @@ def main():
 
     summary = {
         "pipeline_version": "v8-phase2-corpus-1",
-        "dataset_root": str(LAKE_ROOT),
+        "dataset_roots": [str(root) for root in DATA_ROOTS],
         "candidates": stats["candidates"],
         "accepted": stats["accepted"],
         "rejected": stats["rejected"],
@@ -839,7 +878,9 @@ def main():
     print("=" * 68)
     print("OWN AI v8 PHASE 2 CLEAN CORPUS")
     print("=" * 68)
-    print("Dataset root:", LAKE_ROOT)
+    print("Dataset roots:")
+    for root in DATA_ROOTS:
+        print(" -", root)
     print("Candidates:", stats["candidates"])
     print("Accepted:", stats["accepted"])
     print("Rejected:", stats["rejected"])
