@@ -246,7 +246,16 @@ def build_tokenizer(files):
     return tokenizer, used
 
 
-def split_for_hash(value):
+def split_for_hash(value, ordinal):
+    # Guarantee at least one validation and one test chunk on small datasets.
+    # For large datasets, the normal deterministic 90/5/5 hash split is used.
+    if ordinal == 1:
+        return "train"
+    if ordinal == 2:
+        return "val"
+    if ordinal == 3:
+        return "test"
+
     bucket = int(
         value[:8],
         16,
@@ -343,6 +352,7 @@ def main():
     }
 
     seen_chunks = set()
+    unique_chunk_ordinal = 0
 
     chunk_chars = max(
         64_000,
@@ -370,9 +380,11 @@ def main():
             seen_chunks.add(
                 chunk_hash
             )
+            unique_chunk_ordinal += 1
 
             split = split_for_hash(
-                chunk_hash
+                chunk_hash,
+                unique_chunk_ordinal,
             )
 
             token_ids = tokenizer.encode(
