@@ -100,15 +100,10 @@ def category_for(path):
 def source_type_for(path):
     category = category_for(path)
     if category in {
-        "owned", "private", "user", "personal",
-        "conversations",
-    }:
-        return "user_supplied"
-    if category in {
         "open_license", "open", "public_domain",
     }:
         return "open_license"
-    return "unspecified"
+    return "user_supplied"
 
 
 def license_status_for(path):
@@ -411,8 +406,11 @@ def init_db():
             id INTEGER PRIMARY KEY,
             normalized_sha256 TEXT UNIQUE NOT NULL,
             source_sha256 TEXT NOT NULL,
-            simhash INTEGER NOT NULL,
-            simhash_signed INTEGER NOT NULL,
+            simhash_hex TEXT NOT NULL,
+            band0 INTEGER NOT NULL,
+            band1 INTEGER NOT NULL,
+            band2 INTEGER NOT NULL,
+            band3 INTEGER NOT NULL,
             path TEXT NOT NULL,
             category TEXT NOT NULL,
             extension TEXT NOT NULL,
@@ -423,83 +421,32 @@ def init_db():
         )
         """
     )
-    connection.execute(
-        """
-        CREATE INDEX idx_documents_band0
-        ON documents ((simhash_signed >> 48))
-        """
-    )
-    connection.execute(
-        """
-        CREATE INDEX idx_documents_band1
-        ON documents ((simhash_signed >> 32) & 65535)
-        """
-    )
-    connection.execute(
-        """
-        CREATE INDEX idx_documents_band2
-        ON documents ((simhash_signed >> 16) & 65535)
-        """
-    )
-    connection.execute(
-        """
-        CREATE INDEX idx_documents_band3
-        ON documents (simhash_signed & 65535)
-        """
-    )
+    for band in range(4):
+        connection.execute(
+            f"CREATE INDEX idx_documents_band{band} "
+            f"ON documents (band{band})"
+        )
     return connection
 
 
-def sqlite_signed(value):
-    if value >= 2**63:
-        return value - 2**64
-    return value
-
-
-def split_for_digest(digest):
-    bucket = int(
-        digest[:8],
-        16,
-    ) % 100
-    if bucket < 90:
-        return "train"
-    if bucket < 95:
-        return "val"
-    return "test"
+def simhash_bands(signature):
+    return (
+        (signature >> 48) & 65535,
+        (signature >> 32) & 65535,
+        (signature >> 16) & 65535,
+        signature & 65535,
+    )
 
 
 def near_duplicate(connection, signature):
-    signed = sqlite_signed(signature)
-    bands = [
-        (0, (signed >> 48) & 65535),
-        (1, (signed >> 32) & 65535),
-        (2, (signed >> 16) & 65535),
-        (3, signed & 65535),
-    ]
-
+    bands = simhash_bands(signature)
     candidate_ids = set()
-    for band, value in bands:
-        if band == 0:
-            rows = connection.execute(
-                "SELECT id FROM documents WHERE (simhash_signed >> 48) = ?",
-                (value,),
-            ).fetchall()
-        elif band == 1:
-            rows = connection.execute(
-                "SELECT id FROM documents WHERE ((simhash_signed >> 32) & 65535) = ?",
-                (value,),
-            ).fetchall()
-        elif band == 2:
-            rows = connection.execute(
-                "SELECT id FROM documents WHERE ((simhash_signed >> 16) & 65535) = ?",
-                (value,),
-            ).fetchall()
-        else:
-            rows = connection.execute(
-                "SELECT id FROM documents WHERE (simhash_signed & 65535) = ?",
-                (value,),
-            ).fetchall()
 
+    for band_index, value in enumerate(bands):
+        rows = connection.execute(
+            f"SELECT id FROM documents WHERE band{band_index} = ?",
+            (value,),
+        ).fetchall()
         candidate_ids.update(
             row[0]
             for row in rows
@@ -508,7 +455,7 @@ def near_duplicate(connection, signature):
     for candidate_id in candidate_ids:
         row = connection.execute(
             """
-            SELECT simhash_signed, path, chars
+            SELECT simhash_hex, path
             FROM documents
             WHERE id = ?
             """,
@@ -518,38 +465,42 @@ def near_duplicate(connection, signature):
         if not row:
             continue
 
-        old_hash, old_path, old_chars = row
-        old_unsigned = (
-            old_hash
-            if old_hash >= 0
-            else old_hash + 2**64
+        old_hex, old_path = row
+        old_signature = int(
+            old_hex,
+            16,
+        )
+        distance = hamming_distance(
+            signature,
+            old_signature,
         )
 
-        size_ratio = min(
-            signature and 1.0 or 1.0,
-            old_chars / max(
-                1,
-                old_chars,
-            ),
-        )
-        _ = size_ratio
-
-        if (
-            hamming_distance(
-                signature,
-                old_unsigned,
-            )
-            <= NEAR_DUP_DISTANCE
-        ):
+        if distance <= NEAR_DUP_DISTANCE:
             return {
                 "path": old_path,
-                "hamming": hamming_distance(
-                    signature,
-                    old_unsigned,
-                ),
+                "hamming": distance,
             }
 
     return None
+
+
+def split_for_digest(digest, ordinal):
+    if ordinal == 1:
+        return "train"
+    if ordinal == 2:
+        return "val"
+    if ordinal == 3:
+        return "test"
+
+    bucket = int(
+        digest[:8],
+        16,
+    ) % 100
+    if bucket < 90:
+        return "train"
+    if bucket < 95:
+        return "val"
+    return "test"
 
 
 def write_jsonl(handle, record):
@@ -690,7 +641,8 @@ def main():
 
             digest = sha256_file(path)
             split = split_for_digest(
-                digest
+                digest,
+                stats["accepted"] + 1,
             )
 
             record = {
@@ -714,8 +666,11 @@ def main():
                 INSERT INTO documents (
                     normalized_sha256,
                     source_sha256,
-                    simhash,
-                    simhash_signed,
+                    simhash_hex,
+                    band0,
+                    band1,
+                    band2,
+                    band3,
                     path,
                     category,
                     extension,
@@ -724,13 +679,13 @@ def main():
                     split,
                     status
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     normalized_digest,
                     digest,
-                    sqlite_signed(signature),
-                    sqlite_signed(signature),
+                    f"{signature:016x}",
+                    *simhash_bands(signature),
                     str(path),
                     source["category"],
                     source["extension"],
