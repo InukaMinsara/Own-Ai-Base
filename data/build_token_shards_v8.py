@@ -3,8 +3,6 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import re
-import random
 from pathlib import Path
 
 from tokenizer.tokenizer_v8 import OwnTokenizerV8
@@ -18,7 +16,6 @@ SHARD_MB = int(os.getenv("OWN_AI_V8_SHARD_MB", "128"))
 TOKENIZER_SAMPLE_MB = int(
     os.getenv("OWN_AI_V8_TOKENIZER_SAMPLE_MB", "128")
 )
-SEED = 42
 
 ALLOWED = {
     ".txt",
@@ -69,14 +66,17 @@ def iter_files(roots):
 
     for root in roots:
         root = root.resolve()
+
         if not root.exists():
             continue
 
         for path in sorted(root.rglob("*")):
             if not path.is_file():
                 continue
+
             if path.suffix.lower() not in ALLOWED:
                 continue
+
             if any(
                 part in SKIP_PARTS
                 for part in path.parts
@@ -85,13 +85,14 @@ def iter_files(roots):
 
             try:
                 stat = path.stat()
-                key = (
-                    str(path).lower(),
-                    stat.st_size,
-                    stat.st_mtime_ns,
-                )
             except OSError:
                 continue
+
+            key = (
+                str(path).lower(),
+                stat.st_size,
+                stat.st_mtime_ns,
+            )
 
             if key in seen:
                 continue
@@ -102,55 +103,19 @@ def iter_files(roots):
 
 def normalize(text):
     text = text.replace("\\x00", "")
-    text = re.sub(
-        r"[ 	]+",
-        " ",
-        text,
+
+    text = " ".join(
+        line.strip()
+        for line in text.splitlines()
+        if line.strip()
     )
-    text = re.sub(
-        r"\n{4,}",
-        "\n\n\n",
-        text,
-    )
+
     return text.strip()
 
 
-def chunk_text(text, target_chars):
-    text = normalize(text)
-
-    if not text:
-        return
-
-    start = 0
-    length = len(text)
-
-    while start < length:
-        end = min(
-            length,
-            start + target_chars,
-        )
-
-        if end < length:
-            boundary = text.rfind(
-                "
-
-",
-                start,
-                end,
-            )
-            if boundary > start + target_chars // 2:
-                end = boundary
-
-        piece = text[start:end].strip()
-
-        if piece:
-            yield piece
-
-        start = end
-
-
 def iter_file_chunks(path, chunk_chars):
-    """Read a source file incrementally without loading it all into RAM."""
+    """Read text incrementally so large files never need to fit in RAM."""
+
     buffer = ""
 
     try:
@@ -185,34 +150,39 @@ def iter_file_chunks(path, chunk_chars):
                     if boundary < chunk_chars // 2:
                         boundary = chunk_chars
 
-                    piece = buffer[:boundary]
-                    buffer = buffer[boundary:]
-
                     piece = normalize(
-                        piece
+                        buffer[:boundary]
                     )
+
+                    buffer = buffer[boundary:]
 
                     if piece:
                         yield piece
 
-            buffer = normalize(
-                buffer
-            )
-            if buffer:
-                yield buffer
+            tail = normalize(buffer)
 
-    except OSError:
-        return
+            if tail:
+                yield tail
+
+    except OSError as exc:
+        print(
+            "SKIP:",
+            path,
+            "-",
+            exc,
+        )
 
 
 def build_tokenizer(files):
-    sample_limit = TOKENIZER_SAMPLE_MB * 1024 * 1024
+    sample_limit = (
+        TOKENIZER_SAMPLE_MB
+        * 1024
+        * 1024
+    )
+
     parts = []
     used = 0
 
-    # Deterministically mix files by hashing their path instead of depending
-    # on directory order. This gives a more representative vocabulary when
-    # the corpus is very large.
     ordered = sorted(
         files,
         key=lambda path: hashlib.sha1(
@@ -227,14 +197,15 @@ def build_tokenizer(files):
         if used >= sample_limit:
             break
 
+        remaining = sample_limit - used
+
         try:
-            remaining = sample_limit - used
             with path.open(
                 "r",
                 encoding="utf-8",
                 errors="ignore",
             ) as handle:
-                text = handle.read(
+                sample = handle.read(
                     min(
                         remaining,
                         8 * 1024 * 1024,
@@ -243,17 +214,13 @@ def build_tokenizer(files):
         except OSError:
             continue
 
-        if not text:
+        if not sample:
             continue
 
-        parts.append(text)
-        used += len(text)
+        parts.append(sample)
+        used += len(sample.encode("utf-8"))
 
-    sample = "
-
-".join(parts)
-
-    if not sample:
+    if not parts:
         raise ValueError(
             "No readable training text found."
         )
@@ -261,21 +228,30 @@ def build_tokenizer(files):
     tokenizer = OwnTokenizerV8(
         vocab_size=VOCAB_SIZE
     )
-    tokenizer.train(sample)
+
+    tokenizer.train(
+        "\n\n".join(parts)
+    )
 
     return tokenizer, used
 
 
 def split_for_hash(value):
-    bucket = int(value[:8], 16) % 100
+    bucket = int(
+        value[:8],
+        16,
+    ) % 100
+
     if bucket < 90:
         return "train"
+
     if bucket < 95:
         return "val"
+
     return "test"
 
 
-def write_token_bytes(path, token_ids):
+def append_token_ids(path, token_ids):
     import array
 
     values = array.array(
@@ -292,25 +268,12 @@ def write_token_bytes(path, token_ids):
     return len(values)
 
 
-def main():
-    rng = random.Random(SEED)
-
-    roots = data_roots()
-    files = list(
-        iter_files(roots)
-    )
-
-    if not files:
-        raise ValueError(
-            "No dataset files found. Put training data in data\cache, "
-            "data\raw, or data\knowledge, or set OWN_AI_V8_DATA_DIRS."
-        )
-
-    tokenizer, sample_bytes = build_tokenizer(
-        files
-    )
-
-    for split in ("train", "val", "test"):
+def reset_output():
+    for split in (
+        "train",
+        "val",
+        "test",
+    ):
         directory = OUT_ROOT / split
         directory.mkdir(
             parents=True,
@@ -321,17 +284,38 @@ def main():
             if old.is_file():
                 old.unlink()
 
+
+def main():
+    roots = data_roots()
+
+    files = list(
+        iter_files(roots)
+    )
+
+    if not files:
+        raise ValueError(
+            "No dataset files found. Put training data in "
+            "data\\cache, data\\raw, or data\\knowledge, "
+            "or set OWN_AI_V8_DATA_DIRS."
+        )
+
+    tokenizer, sample_bytes = build_tokenizer(
+        files
+    )
+
+    reset_output()
+
     tokenizer_path = (
         OUT_ROOT / "tokenizer_v8.json"
     )
+
     tokenizer.save(
         tokenizer_path
     )
 
-    shard_bytes = SHARD_MB * 1024 * 1024
-    shard_tokens_estimate = max(
+    shard_token_limit = max(
         1024,
-        shard_bytes // 4,
+        (SHARD_MB * 1024 * 1024) // 4,
     )
 
     state = {
@@ -339,8 +323,13 @@ def main():
             "index": 0,
             "tokens": 0,
             "files": 0,
+            "bytes": 0,
         }
-        for split in ("train", "val", "test")
+        for split in (
+            "train",
+            "val",
+            "test",
+        )
     }
 
     seen_chunks = set()
@@ -350,19 +339,19 @@ def main():
         SHARD_MB * 256,
     )
 
-    for file_index, path in enumerate(files, 1):
+    for file_index, path in enumerate(
+        files,
+        1,
+    ):
         for chunk in iter_file_chunks(
             path,
             chunk_chars,
         ):
-            normalized = normalize(chunk)
-            if len(normalized) < 32:
+            if len(chunk) < 32:
                 continue
 
             chunk_hash = hashlib.sha256(
-                normalized.encode(
-                    "utf-8"
-                )
+                chunk.encode("utf-8")
             ).hexdigest()
 
             if chunk_hash in seen_chunks:
@@ -377,7 +366,7 @@ def main():
             )
 
             token_ids = tokenizer.encode(
-                normalized,
+                chunk,
                 add_special_tokens=True,
             )
 
@@ -385,33 +374,38 @@ def main():
                 continue
 
             info = state[split]
-            shard_number = info["index"]
 
-            if info["tokens"] and (
+            if (
                 info["tokens"]
+                and info["tokens"]
                 + len(token_ids)
-                > shard_tokens_estimate
+                > shard_token_limit
             ):
                 info["index"] += 1
                 info["tokens"] = 0
-                shard_number = info["index"]
+                info["files"] = 0
+                info["bytes"] = 0
 
-            out_dir = OUT_ROOT / split
+            shard_number = info["index"]
+
+            out_dir = (
+                OUT_ROOT / split
+            )
+
             shard_path = (
                 out_dir
                 / f"shard-{shard_number:06d}.bin"
             )
 
-            added = write_token_bytes(
+            added = append_token_ids(
                 shard_path,
                 token_ids,
             )
 
             info["tokens"] += added
             info["files"] += 1
-
-            meta_path = shard_path.with_suffix(
-                ".json"
+            info["bytes"] += len(
+                chunk.encode("utf-8")
             )
 
             metadata = {
@@ -425,7 +419,9 @@ def main():
                 ),
             }
 
-            meta_path.write_text(
+            shard_path.with_suffix(
+                ".json"
+            ).write_text(
                 json.dumps(
                     metadata,
                     ensure_ascii=False,
@@ -436,20 +432,26 @@ def main():
 
         if file_index % 25 == 0:
             print(
-                f"Processed files: {file_index}/{len(files)} | "
-                f"unique chunks: {len(seen_chunks)}"
+                f"Processed files: "
+                f"{file_index}/{len(files)} | "
+                f"unique chunks: "
+                f"{len(seen_chunks)}"
             )
 
     summary = {
         "files": len(files),
-        "unique_chunks": len(seen_chunks),
+        "unique_chunks": len(
+            seen_chunks
+        ),
         "tokenizer_sample_bytes": sample_bytes,
         "vocab_size": tokenizer.vocab_size,
+        "shard_mb": SHARD_MB,
         "splits": state,
-        "seed": SEED,
     }
 
-    (OUT_ROOT / "dataset_summary.json").write_text(
+    OUT_ROOT.joinpath(
+        "dataset_summary.json"
+    ).write_text(
         json.dumps(
             summary,
             ensure_ascii=False,
@@ -463,12 +465,30 @@ def main():
     print("=" * 68)
     print("Files:", len(files))
     print("Unique chunks:", len(seen_chunks))
-    print("Tokenizer sample bytes:", sample_bytes)
-    print("Vocabulary:", tokenizer.vocab_size)
-    print("Train:", state["train"])
-    print("Val:", state["val"])
-    print("Test:", state["test"])
-    print("Output:", OUT_ROOT)
+    print(
+        "Tokenizer sample bytes:",
+        sample_bytes,
+    )
+    print(
+        "Vocabulary:",
+        tokenizer.vocab_size,
+    )
+    print(
+        "Train:",
+        state["train"],
+    )
+    print(
+        "Val:",
+        state["val"],
+    )
+    print(
+        "Test:",
+        state["test"],
+    )
+    print(
+        "Output:",
+        OUT_ROOT,
+    )
     print("=" * 68)
 
 
