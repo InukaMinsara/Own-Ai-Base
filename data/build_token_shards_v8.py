@@ -3,12 +3,21 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
+
+# Allow both:
+#   python data\\build_token_shards_v8.py
+# and:
+#   python -m data.build_token_shards_v8
+# when launched from the project root.
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from tokenizer.tokenizer_v8 import OwnTokenizerV8
 
 
-ROOT = Path(__file__).resolve().parent.parent
 OUT_ROOT = ROOT / "data" / "processed" / "token_shards_v8"
 
 VOCAB_SIZE = int(os.getenv("OWN_AI_V8_VOCAB", "4096"))
@@ -102,7 +111,8 @@ def iter_files(roots):
 
 
 def normalize(text):
-    text = text.replace("\\x00", "")
+    # Remove actual NUL characters without embedding a literal NUL in source.
+    text = text.replace(chr(0), "")
 
     text = " ".join(
         line.strip()
