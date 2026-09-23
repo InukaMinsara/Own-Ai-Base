@@ -42,6 +42,12 @@ SKIP_DIRS = {
     "trash", "quarantine", "_phase2_processed",
 }
 
+SKIP_FILES = {
+    "SOURCE_METADATA.json",
+    "EXTRACTION_METADATA.json",
+    "dataset_info.json",
+}
+
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
     re.compile(r"AIza[0-9A-Za-z_-]{20,}"),
