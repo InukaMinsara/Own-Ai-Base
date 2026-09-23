@@ -438,7 +438,36 @@ def simhash_bands(signature):
     )
 
 
-def near_duplicate(connection, signature):
+def text_shingles(text):
+    words = re.findall(r"\S+", text.lower())
+    if len(words) < 24:
+        return set()
+
+    shingles = set()
+    for index in range(len(words) - 4):
+        shingles.add(
+            " ".join(words[index:index + 5])
+        )
+        if len(shingles) >= 2048:
+            break
+    return shingles
+
+
+def jaccard_similarity(left, right):
+    if not left or not right:
+        return 0.0
+    union = left | right
+    if not union:
+        return 0.0
+    return len(left & right) / len(union)
+
+
+def near_duplicate(connection, signature, text, char_count):
+    # SimHash is only a candidate generator. A second lexical similarity
+    # check is required to avoid falsely rejecting unrelated short documents.
+    if char_count < 512:
+        return None
+
     bands = simhash_bands(signature)
     candidate_ids = set()
 
@@ -452,10 +481,14 @@ def near_duplicate(connection, signature):
             for row in rows
         )
 
+    current_shingles = text_shingles(text)
+    if not current_shingles:
+        return None
+
     for candidate_id in candidate_ids:
         row = connection.execute(
             """
-            SELECT simhash_hex, path
+            SELECT simhash_hex, path, chars
             FROM documents
             WHERE id = ?
             """,
@@ -465,20 +498,48 @@ def near_duplicate(connection, signature):
         if not row:
             continue
 
-        old_hex, old_path = row
+        old_hex, old_path, old_chars = row
         old_signature = int(
             old_hex,
             16,
         )
+
         distance = hamming_distance(
             signature,
             old_signature,
         )
 
-        if distance <= NEAR_DUP_DISTANCE:
+        if distance > 2:
+            continue
+
+        if min(char_count, old_chars) / max(
+            1,
+            max(char_count, old_chars),
+        ) < 0.70:
+            continue
+
+        try:
+            old_text = normalize_text(
+                read_text(
+                    Path(old_path)
+                )
+            )
+        except Exception:
+            continue
+
+        similarity = jaccard_similarity(
+            current_shingles,
+            text_shingles(old_text),
+        )
+
+        if similarity >= 0.90:
             return {
                 "path": old_path,
                 "hamming": distance,
+                "jaccard": round(
+                    similarity,
+                    4,
+                ),
             }
 
     return None
@@ -623,6 +684,8 @@ def main():
             near = near_duplicate(
                 connection,
                 signature,
+                normalized,
+                quality["chars"],
             )
 
             if near:
@@ -634,6 +697,7 @@ def main():
                         "reason": "near_duplicate",
                         "duplicate_of": near["path"],
                         "hamming": near["hamming"],
+                        "jaccard": near["jaccard"],
                         "normalized_sha256": normalized_digest,
                     },
                 )
