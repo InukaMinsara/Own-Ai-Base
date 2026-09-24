@@ -29,12 +29,15 @@ class OwnTokenizerV8:
         piece_freq = Counter()
         char_freq = Counter()
         whitespace_freq = Counter()
+        whitespace_char_freq = Counter()
 
         for piece in self._pieces(text):
             piece_freq[piece] += 1
 
             if piece.isspace():
                 whitespace_freq[piece] += 1
+                for ch in piece:
+                    whitespace_char_freq[ch] += 1
                 continue
 
             for ch in piece:
@@ -51,6 +54,22 @@ class OwnTokenizerV8:
         )
 
         for ch, _freq in ranked_chars:
+            if len(vocab) >= self.target_vocab_size:
+                break
+            if ch not in used:
+                vocab.append(ch)
+                used.add(ch)
+
+        # Whitespace characters are also hard-priority. Without reserving
+        # them before whole pieces, a full 4096-token vocabulary can omit
+        # the ordinary space character, causing decoded text to concatenate
+        # words and prompts together.
+        ranked_whitespace_chars = sorted(
+            whitespace_char_freq.items(),
+            key=lambda item: (-item[1], item[0]),
+        )
+
+        for ch, _freq in ranked_whitespace_chars:
             if len(vocab) >= self.target_vocab_size:
                 break
             if ch not in used:
@@ -215,7 +234,7 @@ class OwnTokenizerV8:
                 for k, v in self.id_to_token.items()
             },
             "max_piece_len": self.max_piece_len,
-            "tokenizer_version": "v8-hybrid-char-first",
+            "tokenizer_version": "v8-hybrid-char-whitespace-first",
         }
 
         Path(path).write_text(
