@@ -46,30 +46,30 @@ class OwnTokenizerV8:
         vocab = list(self.SPECIAL)
         used = set(vocab)
 
-        # Character coverage is a hard priority. If the corpus has fewer
-        # characters than the target vocabulary, all of them are preserved.
-        ranked_chars = sorted(
-            char_freq.items(),
-            key=lambda item: (-item[1], item[0]),
-        )
-
-        for ch, _freq in ranked_chars:
-            if len(vocab) >= self.target_vocab_size:
-                break
-            if ch not in used:
-                vocab.append(ch)
-                used.add(ch)
-
-        # Whitespace characters are also hard-priority. Without reserving
-        # them before whole pieces, a full 4096-token vocabulary can omit
-        # the ordinary space character, causing decoded text to concatenate
-        # words and prompts together.
+        # Whitespace characters are mandatory. They must be reserved BEFORE
+        # general character coverage because a Unicode-heavy corpus can have
+        # thousands of distinct characters and consume the full vocabulary.
         ranked_whitespace_chars = sorted(
             whitespace_char_freq.items(),
             key=lambda item: (-item[1], item[0]),
         )
 
         for ch, _freq in ranked_whitespace_chars:
+            if len(vocab) >= self.target_vocab_size:
+                break
+            if ch not in used:
+                vocab.append(ch)
+                used.add(ch)
+
+        # Character coverage comes next. This keeps Sinhala and other scripts
+        # from becoming UNK-heavy while guaranteeing that common whitespace
+        # is always decodable.
+        ranked_chars = sorted(
+            char_freq.items(),
+            key=lambda item: (-item[1], item[0]),
+        )
+
+        for ch, _freq in ranked_chars:
             if len(vocab) >= self.target_vocab_size:
                 break
             if ch not in used:
